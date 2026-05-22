@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>03 ex</title>
+    </head>
+    <body>
+        <!--1.리스트.-->
+        <ul>
+            <li>aaa</li>/
+            <li>bbb</li>
+            <li>ccc</li>
+        </ul>
+        <ol>
+            <li>aaa</li>
+            <li>bbb</li>
+            <li>ccc</li>
+        </ol>
+        <dl>
+            <dt>aaa</dt>
+            <dd>aaa is good</dd>
+            <dt>bbb</dt>
+            <dd>so so</dd>
+            <dt>ccc</dt>
+            <dd>bad</dd>
+        </dl>
+        <hr>
+        <!--상대 경오 지정으로 파일링크 가능-->
+        <!-- 2. 하이퍼링크 anchor요소(인라인 요소 -공간이 있다면 옆으로 배치한다.)-->
+         <a href="https://www.naver.com">네이버</a>
+         <br>
+         <a href="https://www.google.com" target="_blank">구글</a>
+         <br>
+        <a href=".01_ex.html" target="_self">01실습 웹문서 열기</a>
+        <br>
+        <!--3. 현재문서안에서 특정위치로 이동-->
+        <a href="#help">도움말 위치로 이동</a> 
+        <hr>
+        <h3 id="help">도움말</h3>   
+        <!--줄바꾸기 위해서 매번 br태그 사용하기 보단 (간격도 없다) 단락요소 줄 바꾸는 것이-->
+        <p><a href="">aaa</a></p>
+        <p><a href="">bbb</a></p>
+        <!-- 리스트의 요소를 링크들을 배치할 수 있다.-->
+         <ul>
+            <li><a href="">네이버</a></li>
+            <li><a href="">구글</a></li>
+            <li><a href="">다음</a></li>
+         </ul>
+
+         <!--href에 .html 문서 외에도 링크를 연결할 수 있음-->
+         <p><a href="http://mbca2025aix.dothome.co.kr/download/moana.jpg">이미지 링크</a></p>
+
+         <!--브라우저가 보여주는 못하는 문서를 링크하면 자동 다운로드 된다.-->
+         <p><a href="http://mbca2025aix.dothome.co.kr/download/Fonts.zip">압축문서</a></p>
+         <p><a href="http://mbca2025aix.dothome.co.kr/download/공모전.hwp">한글문서</a></p>
+
+        <!--이메일 주소를 링크하면 이메일 앱이 실행-->
+        <p><a href="mailto:dlrkdgur2435@naver.com">이메일</a></p>
+
+        <!-- 3. 이미지를 보여주는 요소 -->
+        <img src="http://mbca2025aix.dothome.co.kr/download/moana.jpg" alt="모아나 이미지">
+        <img src="./image/newyork.jpg" alt="상대경로 이미지" width="200" height="150" border="2">
+        <img src="./image/paris.jpg" alt="파일 이미지" width="50%">
+        <img src="aaa.jpg" alt="이미지 없을 때 대체">
+        
+        <!-- img+anchor-->
+         <a href="./image/penguins.jpg"><img src="./image/penguins.jpg" alt="시드니 이미지"</a>
+    </body>
+
+</html>
+
+<!-- 수행과제  -->
+ <!-- 슬라이드 자료 chapter2 32,33 커피 전문점 홈페이지 와 나사어쩌구 저쩌구 하기-->
+  <!--  p91까지 읽어보기 3-4는 건너 뛰었는데 시멘틱태그는 제외했다. 별도수업 예정 -->
