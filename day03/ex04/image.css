@@ -1,0 +1,62 @@
+.menu{
+    width: 420px;
+
+    position: relative;
+
+    margin: 30px auto;
+}
+
+.menu img{
+    width: 100%;
+
+    border-radius: 20px;
+
+    border: 5px solid peru;
+
+    transition: 0.3s;
+}
+
+.menu p{
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    color: white;
+
+    font-size: 35px;
+
+    font-weight: bold;
+
+    opacity: 0;
+
+    transition: 0.3s;
+}
+
+.menu:hover img{
+    filter: brightness(50%);
+}
+
+.menu:hover p{
+    opacity: 1;
+}
+
+.menu-box{
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 30px;
+}
+
+.menu{
+
+    width: 300px;
+
+    position: relative;
+}

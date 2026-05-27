@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>별빛 카페 주문 시스템</title>
+    </head>
+
+    <body>
+
+        <h1>☕ 별빛 카페 주문 시스템</h1>
+
+        <form action="result.php" method="post">
+
+            <!-- 전체 메뉴 -->
+            <fieldset>
+                <legend>전체 메뉴</legend>
+
+                <label>
+                    <input type="checkbox" name="coffee[]" value="americano">
+                    아메리카노
+                </label>
+                <br>
+
+                <label>
+                    <input type="checkbox" name="coffee[]" value="latte">
+                    카페라떼
+                </label>
+                <br>
+
+                <label>
+                    <input type="checkbox" name="coffee[]" value="matcha">
+                    말차라떼
+                </label>
+                <br>
+
+                <label>
+                    <input type="checkbox" name="coffee[]" value="caramel">
+                    카라멜 마끼아또
+                </label>
+
+            </fieldset>
+
+            <br>
+
+            <!-- 주문 옵션 -->
+            <fieldset>
+                <legend>주문 옵션</legend>
+
+                <label>
+                    <input type="checkbox" name="option[]" value="ice">
+                    얼음 추가
+                </label>
+                <br>
+
+                <label>
+                    <input type="checkbox" name="option[]" value="shot">
+                    샷 추가
+                </label>
+                <br>
+
+                <label>
+                    <input type="checkbox" name="option[]" value="takeout">
+                    포장하기
+                </label>
+
+            </fieldset>
+
+            <br>
+
+            <!-- 결제 방법 -->
+            <fieldset>
+                <legend>결제 방법</legend>
+
+                <label>
+                    <input type="radio" name="payment" value="cash">
+                    현금
+                </label>
+                <br>
+
+                <label>
+                    <input type="radio" name="payment" value="card">
+                    카드
+                </label>
+                <br>
+
+                <label>
+                    <input type="radio" name="payment" value="pay">
+                    간편결제
+                </label>
+
+            </fieldset>
+
+            <br>
+
+            <!-- 주문 수량 -->
+            <fieldset>
+                <legend>주문 수량</legend>
+
+                <label for="count">수량 입력</label>
+                <input type="number" id="count" name="count" min="1" max="20">
+
+            </fieldset>
+
+            <br>
+
+            <!-- 요청 사항 -->
+            <fieldset>
+                <legend>요청 사항</legend>
+
+                <textarea
+                    name="request"
+                    rows="5"
+                    cols="40"
+                    placeholder="요청사항을 입력해주세요">
+                </textarea>
+
+            </fieldset>
+
+            <br>
+
+            <!-- 주문자 정보 -->
+            <fieldset>
+                <legend>주문자 정보</legend>
+
+                <label for="user_name">이름</label>
+                <input type="text" id="user_name" name="user_name">
+
+                <br><br>
+
+                <label for="phone">연락처</label>
+                <input type="text" id="phone" name="phone">
+
+            </fieldset>
+
+            <br>
+
+            <!-- 파일 업로드 -->
+            <fieldset>
+                <legend>쿠폰 이미지 업로드</legend>
+
+                <input type="file" name="coupon">
+
+            </fieldset>
+
+            <br>
+
+            <!-- 버튼 -->
+            <input type="submit" value="주문하기">
+            <input type="reset" value="초기화">
+
+        </form>
+
+    </body>
+</html>
