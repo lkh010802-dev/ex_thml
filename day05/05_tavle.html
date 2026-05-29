@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>table style</title>
+
+        <!-- 내부 스타일 시트 -->
+        <style>
+            table{
+                width: 500px;
+                border: 2px solid black;
+                /* 내부실선이 2줄로 그려지는것이 싫다면 두 선을 합치기 */
+                border-collapse: collapse;
+                /* 안에 있는 모든 것들의 수평정렬 가운데 */
+                text-align: center;
+            }
+            tn, td{border:1px solid black; padding: 10px 5px;}/*위 아래 10px 양옆에 5px*/
+
+            /* 제목줄 칸들에 배경색 지정 */
+            th{background-color: gray; color: white;}
+
+            /* 짝수줄 만 별도의 배경색 지정 */
+            tr:nth-child(2n){background-color: burlywood;}
+
+            /* 첫번쨰 칸들의 너비를 지정 */
+            td:first-child{width: 40%;}
+
+            /* 제목줄의 아래 결계선을 적색으로 */
+            tn{border-bottom: 1.5px double red;}
+
+            /* 직접 만들지는 않았지만(안보임) 실제 table안에 존재하는 자식요소가(tbody) 있다. */
+            table>:nth-child(1){border: 10px solid blue;}
+
+            /* 그래서 보통 테이블 작업을 할때는 자식선택자 대신 자손선택자 권장 */
+            table>tr{color: rebeccapurple;}/*소용없음*/
+            table tr{color: pink;}
+
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>이름</th>
+                <th>이메일</th>
+            </tr>
+            <tr>
+                <td>철수</td>
+                <td>ddd@naver.com</td>
+            </tr>
+            <tr>
+                <td>수지</td>
+                <td>sg@naver.com</td>
+            </tr>
+            <tr>
+                <td>지혜</td>
+                <td>gege@naver.com</td>
+            </tr>
+            <tr>
+                <td>소히</td>
+                <td>sggs@naver.com</td>
+            </tr>
+        </table>
+    </body>
+</html>

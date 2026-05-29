@@ -32,6 +32,8 @@
 
     opacity: 0;
 
+    white-space: nowrap;
+
     transition: 0.3s;
 }
 
@@ -59,4 +61,64 @@
     width: 300px;
 
     position: relative;
+}
+.banner{
+
+    height: 300px;
+
+    background-image:
+    linear-gradient(
+        rgba(0,0,0,0.4),
+        rgba(0,0,0,0.4)
+    ),
+    url("./image/coffee.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin-bottom: 40px;
+}
+
+.wrap{
+    width: 800px;
+    margin: 0 auto;
+    border: 1px solid gainsboro;
+    background-color: white;
+    min-height: 100vh;
+}
+
+.cart-bar{
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 800px;
+
+    height: 70px;
+
+    background-color: rgb(102, 80, 80);
+
+    color: rgb(255, 226, 60);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 24px;
+
+    font-weight: bold;
 }

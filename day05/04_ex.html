@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ex</title>
+        <!-- 내부 스타일 시트 -->
+        <style>
+            /* 원하는 의사선택자만을 써도 되지만 순서를 지켜야 한다. */
+            #aa:link{color: aqua;}
+            #aa:visited{color: blue;}
+            #aa:hover{color: red; font-size: 1.5em;}
+            #aa:active{color: brown;}
+
+            p:hover{background-color: blueviolet;}
+            img{width: 100px; border: 2px solid black;}
+            img:hover{width: 150px; border: 5px solid yellow;}
+
+            /* 리스트 스타일 */
+            ul{list-style: circle;}
+            ul{list-style: disc;} /*default*/
+            ul{list-style: square;}
+
+            /* 이미지로 블릿기호를 대체하는 방식은 잘 사용안한다. 사이즈 문제라서 꾸밈이 어렵다. */
+            /* ul{list-style-image: url("../day02/image/co4.jpg");} */
+            ul{list-style-type: disc; list-style-position: inside;}
+            ul{list-style: none;}
+
+            ol{list-style-type: lower-alpha;}
+            ol{list-style-type: lower-latin;}
+            ol{list-style-type: lower-roman;}
+            ol{list-style-type: upper-roman;}
+            ol{list-style-type: decimal;}
+            ol{list-style-type: decimal-leading-zero;}
+            
+
+        </style>
+    
+    </head>
+    <body>
+        <a href="https://www.naver.com" id="aa">네이버</a>
+        <p>Hello</p>
+         
+        <img src="../day02/image/mario.jpg" alt="mario">
+
+        <hr>
+
+        <ul>
+            <li>111</li>
+            <li>222</li>
+            <li>333</li>
+        </ul>
+
+        <ol>
+            <li>aaa</li>
+            <li>bbb</li>
+            <li>ccc</li>
+        </ol>
+    </body>
+</html>

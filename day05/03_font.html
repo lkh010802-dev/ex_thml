@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>font text style</title>
+        <!-- 내부 스타일 시트 -->
+         <style>
+            /* 이 영역은 css언어의 운영체계를 따른다. */
+            /* 1. 글꼴 지정 */
+            p{font-family: 'Times New Roman', Times, serif;}
+            p{font-family: '휴먼옛체',serif;}
+
+            /*마지막 글꼴은 서체로 마무리하는 것 권장*/
+            p{font-family: serif;}
+            p{font-family: sans-serif;}
+            p{font-family: monospace;}
+            p{font-family: fantasy;}
+            p{font-family: cursive;}
+
+            /*사용자의 플랫폼 환경 상관없이 같은 글꼴이 보여지려면 보인만의 글꼴을 만들어서 지정, 이름 웹폰트*/
+            /*별도의 폰트파일이 필요*/
+
+            /*웹폰트 제작: 나만의 폰트이름 만들기*/
+            @font-face{
+                font-family: 'my_font';
+                src: url("./font/중나좋체\ Light.ttf");
+            }
+            /*웹폰트를 p요소에 적용*/
+            p{font-family: 'my_font', monospace;}
+
+            @font-face{
+                font-family: 'my_font2';
+                src:url("./font/billabong.otf");
+            }
+            p{font-family: "my_font2", serif;}
+
+            /*책에는 Google font, 아이콘 폰트등을 적용하는 문제도 있다.*/
+
+            /*2. 글씨크기*/
+            p{font-size: 20px;}
+            p{font-size: 150%;} /*원래 폰트사이즈의 150%크기*/
+            p{font-size: 1.5em;} /*원래 폰트사이즈의 1.5배(권장사이즈)*/
+            p{font-size: medium;}
+
+            /*무료폰트 사이트: 산돌구름,눈누*/
+            /* 3. 볼드체 */
+            p{font-weight: bold;}
+            p{font-weight: normal;}
+
+            /* 4.이탤릭체 */
+            p{font-style: italic;}
+            p{font-style: normal;}
+
+            /* 1~4까지의 속성을 한번에 축약으로 [weight,style// size family] */
+            p{font: bold italic 2.5em "my_font2", serif;}
+            /* 필요한 것만 순서대로 사용가능 */
+            p{font: 1.3em "my_font", serif;}
+
+            /* font style------------- */
+
+
+            /* text style */
+            /* 1텍스트 정렬 수평정렬*/
+            p{text-align: right;}
+            p{text-align: center;}
+            p{text-align: justify;}/*양쪽 정렬*/
+
+            /* 2. 대소문자 변환(영어로만 가능) */
+            p{text-transform: lowercase;}
+            p{text-transform: uppercase;}
+            p{text-transform: capitalize;}
+            p{text-transform: none;}
+
+            /* 텍스트의 줄 긋기 */
+            p{text-decoration-line: overline;}
+            p{text-decoration-line: underline;}
+            p{text-decoration-line: line-through;}/*취소선*/
+            p{text-decoration-line: none;}
+
+            /* 4.택스트에 그림자 효과 */
+            p{text-shadow: 5px 3px 5px red;}/*x축 y축 떠있는 정도 색상*/
+
+            /* 5.워드 랩 */
+            p.aa{width: 5em; border: 1px solid blue; word-wrap: break-word;}
+
+            /* 5.다중 컬룸칸 */
+            p.bb{
+                column-count: 2;
+                column-gap: 80px;
+                column-rule: 3cap;
+            }
+         </style>
+    </head>
+    <body>
+        <p>Hello world</p>
+        <p>한글</p>
+
+        <p class="aa">
+            한글은 전혀 문제 없이 자동으로 워드랩 됩니다.
+            asdfafdsdsfasdafdsfasdfasdfadsfasdfafdsa
+        </p>
+       <p class="bb">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt excepturi aut accusamus possimus nisi veritatis, non voluptatibus alias, sed id quas, nihil fugit! At rem laboriosam impedit nam eos laborum.
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore, aliquid et. Quod, dolores repudiandae, consequatur numquam nesciunt voluptates aliquam recusandae tempora nam reiciendis porro id corporis assumenda adipisci, hic voluptatum!
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eveniet saepe quisquam voluptatem et beatae dicta maxime laboriosam vitae nobis sunt suscipit hic, amet soluta ipsa doloremque nam, tempora accusamus sed.
+             
+        </p>
+        <hr>
+
+        <!--  text-aline은 글씨 정렬이 아니라 자식요소의 수평정렬도 돤다 -->
+        <p style="text-align: center; background-color: aqua;">
+            <a href="">naver</a>
+        </p>
+        <!-- 단 인라인요소안의 콘텐츠를 text-align으로 수평정렬 안된다. -->
+
+        <span style="background-color: aquamarine; text-align: center;">
+            Hello
+        </span>
+        <!--인라인요소를 가운데 배치 하려면  -->
+        <div style="text-align: center;">
+            <span>Hello</span>
+
+        </div>
+
+    </body>
+</html>
