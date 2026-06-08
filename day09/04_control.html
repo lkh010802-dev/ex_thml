@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>control</title>
+    <script>
+        //제어문 [조건문, 반복문]
+        //1.if 문
+        var age = 15;
+        if (age < 20) {
+            document.write('미성년 보지마');
+        }
+        document.write('<br>');
+        // 짝수인지 홀수인지
+        var num = 25;
+        if (num % 2 == 0) {
+            document.write('even number');
+        } else {
+            document.write('odd number');
+        }
+        document.write('<br>');
+
+        //점수에 따른 학점 출력
+        var score = 85;
+        if (score >= 90) {
+            document.write('A <br>');
+            document.write('very good <br>');
+        } else if (score >= 80) {
+            document.write('B <br>');
+            document.write('good<br>');
+        } else if (score >= 70) {
+            document.write('C <br>');
+            document.write('so so<br>');
+        } else if (score >= 60) {
+            document.write('D <br>');
+            document.write('not good<br>');
+        } else {
+            document.write('F <br>');
+            document.write('bad<br>');
+        }
+        document.write('<hr>');
+        //2. switch문[파이썬에도 이롸 유산한 문법 match-case]
+        //if 조건의  == 비교를 조금 더 가독성 좋게 분기문이라고 부른다.
+        var menu = 5;
+        switch (menu) {
+            case 1:
+                document.write('걸어');
+                break;
+            case 2:
+                document.write('쉬어');
+                break;
+            case 3:
+                document.write('뛰어');
+                break;
+            default:
+                document.write('wrong menu')
+        }
+        document.write('<hr>');
+
+        //3.while문
+        var n = 0;
+        while (n < 5) {
+            document.write('Hello<br>');
+            n++;
+        }
+
+        //무한반복문을 통해 특정 입력이 될때까지 ...반복하기..
+        while (true) {
+            var name = prompt('당신의 이름을 입력하세요.');
+            if (name == 'exit' || name == '' || name == 'null') { //사용자가 입력없이 [확인] 누르면 '', [취소] 누르면 'null'
+                break;
+            }
+            document.write(name + "<br>");
+        }
+
+
+        //4.for문[파이썬과 문법의 차이가 있다.]
+        var dan=5;
+        for(var n=1; n<10; n++){
+            document.write(dan+"x"+n+"="+(dan*n)+"<br>");
+        }
+        document.write('<hr>');
+        //for문 사용할 때 문법위치를 조정할 수 있다.(권장하지는 않으나 읽을수 있음 통과)
+        var m=0
+        for(; m<5; m++){
+            document.write('good<br>');
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <hr>
+    <!-- html요소 태그와 script문이 혼재되어 사용되는 경우도 있다. -->
+    <table border="1" style="text-align: center;">
+        <tr><th>번호</th></tr>
+        <tr><td>1</td></tr>
+        <tr><td>2</td></tr>
+        <tr><td>3</td></tr>
+        <tr><td>4</td></tr>
+        <script>
+            for(var n=0; n<10; n++){
+            // document.write('<tr><td>'+n+'</td></tr>')
+            document.write(`<tr><td>${n}</td></tr>`)
+            }
+        </script>
+        <hr>
+        <script>
+            //반복문을 제어하는 기타 제어문: break, continue
+            for(var a=0; a<10; a++){
+                if(a==5){break;}
+                
+                document.write(a+'<br>');
+
+            }
+        </script>
+    </table>
+
+
+</body>
+
+</html>

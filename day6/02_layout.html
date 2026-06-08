@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <met aria-checked="utf-8">
+        <title>layout</title>
+
+        <style>
+            /* dusplay속성 실습 */
+            #aa{display: inline; width: 300px;}
+            #aa{display:  inline-block; width: 300px;}
+
+            img{display: block;}
+            #kk{display: none;}
+
+        </style>
+    </head>
+    <body>
+        <!-- display 속성 연습 -->
+        <p id="aa"> Hello</p>
+        <a href="">good</a>
+        <strong>morning.</strong>
+
+        <img src="./image/border.png" alt="image">
+
+        <hr>
+        <ul>
+            <li>aaa</li>
+            <li id="kk">bbb</li>
+            <li>ccc</li>
+        </ul>
+
+        <hr>
+        <!-- 블럭요소와 인라인요소를 혼합하여 사용할 때 고려할 것 들 -->
+        <!--블럭요소안에 인라인요소를 넣을 수 있다  -->
+        <div style="background-color: red; border: solid; padding: 5px;">
+            Nice <em>aaaa</em>world
+        </div>
+        <!-- 인라인요소안에 블럭요소는 넣으면 안된다. 에러는 아니지만 코드가 이상해진다. -->
+        <span style="background-color: aqua; border: solid; padding: 5px;">
+            nice <p>aaaa</p> world
+        </span>
+
+        <!-- 블럭안에 다른 블ㄹ럭요소를 넣을 수 있다 -->
+        <div style="background-color: beige; border: solid; padding: 5px;">
+            nice <p>aaaa</p> world
+        </div>
+
+        <!-- 블럭안에 같은 블럭요소를 넣으면 -->
+        <p style="background-color: gainsboro; border: solid; padding: 5px;">
+            nice <p>aaaa</p> world
+        </p>
+
+        <h2 style="background-color: gainsboro; border: solid; padding: 5px;">
+            nice <h2>aaaa</h2> world
+        </h2>
+
+        <!-- div블럭요소안에 div블럭요소가 존재하는 것은 허용 -->
+        <div style="background-color: gainsboro; border: solid; padding: 5px;">
+            nice <div>aaaa</div> world
+        </div>
+        <hr>
+
+        <!-- postion속성 &위치지정속성(left, right, top, bottom) -->
+        <div class="region">
+            <p id="p1">block #1</p>
+            <p id="p2">block #2</p>
+            <p id="p3">block #3</p>
+        </div>
+
+        <style>
+            .region{
+                background-color: black;
+                position: relative;
+            }
+
+            #p1{
+                background-color: aqua;
+                width: 200px;
+                height: 50px;
+            }
+            #p2{
+                position: static; /*정적위치-디폴트: 원래 놓여져야 할 위치에 놓여진다.(겹치지 않는다.)*/
+                position: relative; /*상대위치-원래 놓여질 위치에서 위치지정 속성값을 반영한다.*/
+                position: absolute; /*절대위치-웹 문서의 좌상단을 기준으로 배치(위치지정을 하지 않는다면 그려지지 않는다.*/
+                /* 절대위치를 사용할 때 부모요소의 posution이 static이 아니면 부모요소의 좌상단을 기준으로 한다. */
+                /* 위치 지정 속성(position: static에서는 무시된다.) */
+                position: fixed;/*고정위치- 웹브라우저창을 기준으로 배치한다. 광고창*/
+                left: 50px;
+                top: 30px;
+
+                background-color: yellow;
+                width: 150px;
+                height: 50px; 
+            }
+            #p3{
+                background-color: goldenrod;
+                width: 200px;
+                height: 50px;
+            }
+        </style>
+
+    </body>
+</html>

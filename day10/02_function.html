@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>]function</title>
+    <script>
+        //1.함수 정의(선언적 함수)
+        function aaa(){
+            document.write('aaa function<br>');
+            document.write('Hello')
+        }
+        aaa();
+
+        //특이점은 함수를 정의한 코드가 호출문보다 나중애 있어도 호출 js는 script영역의 코드를 실행하기전에 해당 영역의 선언적함수들을 먼저 읽는다.
+        bbb();
+
+        function bbb(){
+            document.write('bbb function<br>');
+        }
+
+        //아래에 작성한 다른 영역의 함수를 호출 해보기
+        // ccc(); //error
+        //에러가 발생하면 사용자가 보는 몸통영역에는 아무 표시가 없으나 f12의 console탭에 표시
+        // 에러가 발생하면 script영역은 더이상 코드 진행이 안된다.
+        document.write('안나옴<hr>');
+        //단, 다른 스크립트는 별도로 이어서 실행
+
+    </script>
+    <!-- 또 다른 스크립영역가능 -->
+    <script>
+        //위 영역에 있던 선언적 함수를 호출가능
+        bbb();
+
+        function ccc(){
+
+            document.write('ccc function<br>')
+        }
+    </script>
+    <!-- 2.함수 파라미터에 값 전달하기 -->
+    <script>
+        document.write('<hr>');
+        //값 1개를 전달받는 함수 정의.
+        function ddd(a){//주의! 파라미터(매개변수)를 만들때는 var있으면 안된다.
+            document.write(a+'<br>');
+        }
+        //함수 호출하면서 값 전달하기
+        ddd(100);
+        ddd('sma');
+        ddd(new Date());
+        //값을 전달하지 않으면??
+        ddd();//undefind
+
+        //매게변수(퍼러미터) 2개짜리 함수
+        function eee(a,b){
+            document.write(a+', '+b+'<br>');
+
+            //혹시 a와 b값이 전달되지 않으면 에러문구 보여주기, 덧셈연산을 하지 않도록 함수의 동작을 멈추게 하기
+            if(a==undefined||b==undefined){
+                document.write('2개의 수를 모두 전달해 주세요<br>');
+                return
+            }
+            
+            //전달받은 두 매개변수의 값들을 덧셈하여 결과 출력하기
+            let c= a+b;
+            document.write('결과: '+ c +'<br>');
+        }
+        eee(50,20);
+        eee(50); //뒤에꺼 undefinde
+
+        //같은 이름의 함수를 또 정의하면, 덮어쓰기 가능( 마지막 정의한 함수내용으로 덮어씌워진다.)
+        //위에서 먼저 호출했던 eee(50,20)문도 영향이 받는다.
+        function eee(){
+            document.write('같은 이름 반복 eee function<br>');
+        }
+        eee();
+    </script>
+
+    <!-- 3.함수 실행후 결과를 리턴받기 -->
+    <script>
+        document.write('<hr>');
+
+        function ggg(){
+            return 1000;//ggg()함수를 호출한 윛치로 1000이라는 값을 가지고 돌아가기
+            // 문자열, 논리값, 부등호, 사칙연산, 날짜(Date)까지 들어간다.
+        }
+        n = ggg(); //ggg함수의 코드가 실행되고 그 return된 값이 이자리를 대체했다.
+        document.write(n+'<br>');
+        document.write('<br>');
+        //여러개의 값을 한번에 리턴할 수 없다.
+        //여러개를 리턴할려면 배열로 묶어서 리턴해야 한다.
+
+        function hhh(){
+            return 10,20;  //뒤에만 []쓰면 대열변수로 변해서 인덱스 번호 써야해서 귀찮다.
+        }
+
+        let m = hhh();
+        document.write(m+'<br>');
+
+    </script>
+    <!-- 함수의 매개변수 기본값 -->
+    <script>
+        document.write('<hr>');
+        function sss(a=5){//디폴트값
+            document.write(a+'<br>');
+        }
+        sss (10000);
+        sss();
+        function ttt(a=1, b=2){
+            document.write(a+', '+b+'<br>');
+        }
+        ttt(10,20);
+        ttt(100);
+        ttt();
+        //파이썬과 다른 점, 값을 전달할 때 파라미터명을 지정할 수 있따.
+        ttt(b=1000, a=50);//그냥 파라미터 순서대로 전달이 되어 순서변경이 안된다.
+    </script>
+    <!-- arguments 배열함수 사용 빈도가 적다.-->
+    <script>
+        document.write('<hr>');
+        //arguments 배열: 배개변수를 자동으로 저장하는 내장된 배열변수
+        function add(){
+            document.write('전달된 값의 개수: '+arguments.length+'<br>');
+            //전달된 각 값들은 반복문으로 arguments의 요소들에 접근한다.
+            for(let n=0; n<arguments.length; n++){
+                document.write(arguments[n]+', ');
+            }
+            document.write('<br>');
+        }
+        add();
+        add(10);
+        add(10,20);
+
+    </script>
+    <!-- 지역변수와 존역변수 -->
+    <script>
+        document.write('<hr>');
+
+        //지역변수: 함수 안에서 var키워드로 만든 변수
+        //전역변수: 함수 밖에서 var키워드도 만들거나 함수안에서 var키워드 없이 만든 변수
+        
+        //지역변수는 변수를 만든 그 함수 영역(지역)안에서만 인식되는 변수
+        //전역변수는 이 스크립트 안에 어디서든 인식 가능한 변수
+
+        let name='sam'; //전역 변수
+        function mmm(){
+            let num=10; //지역변수
+            document.write('함수 안의 지역변수 num: '+num+'<br>');
+            document.write('함수 안 전역변수 naem: '+name+'<br>');
+            //함수 안에서 전역변수를 만들고 싶다면 그냥 변수를 만들 것
+            address='seoul'; //전역변수
+            document.write('함수 안 전역변수 address: '+address+ '<br>');
+        }
+        mmm();
+        //document.write('함수 밖에서 지역변수 num: '+num+'<br>');//error
+        document.write('함수 밖 전역변수 name: '+name+'<br>');
+        document.write('함수 밖 전역변수 address: '+address+ '<br>');
+        document.write('<br>');
+
+        //지역변수에서 지역이라는ㄴ 의미는 함수의 {}영역을 의한다.
+        //그래서 다른{}영역은 지역으로 인식하지 않느다.
+        if(true){
+            var tel= '010-222-3333'; //지역변수가 아니다.
+            document.write('조건문 안 tel: '+tel+'<br>');
+        }
+        document.write('조건문 밖 tel: '+tel+'<br>');
+        //js의 버전 ECMAScript6 버전에서 새로운 변수 생성 키워드 let, const는 {}는 모두 지역으로 인식한다.
+    </script>
+
+    <!-- 이름없는 함수: 익명함수 -->
+    <script>
+        document.write('<hr>');
+        //익명함수는 반드시 선언하면서 변수에 넣어야 함다.
+        var show= function(){
+            document.write('익명함수<br>');
+
+        }
+        document.write(show+'<br>'); //show변수가 저장하고 있는 함수코드가 출력된다.
+        //변수의 이름을 함수 이름처럼 호출할 수 있다.
+        show();
+    </script>
+
+    <!-- 함수를 변수에 대입할수 있기에 다른 변수에도 함수코드를 넘겨줄 수 있다. -->
+    <script>
+        document.write('<br>');
+
+        var sss= function(){
+            document.write('sss function<br>');
+        }
+        var ttt= sss;//sss변수가 가진 함수코드를 ttt변수가 대입받아 저장.
+        //ttt는 함수코드를 가지고 있으니 변수명을 마치 함수이름처러 사용하여 호출가능
+        ttt();
+        //일반변수말고 다른함수의 매개변수(파라미터)에 sss함수코드를 전달할 수도 있다.
+        function www(f){
+            //f가 함수를 가지고 있으니 함수명처럼 호출가능하다.
+            f();
+        }
+        www(sss) //www함수를 호출하면서 sss가 가진 함수코드를 전달 하면 f라는 매개변수가 받는다.
+        //같은 함수를 호출하면서 다른 함수를 전달할 수도 있다.
+        www(function(){
+            document.write('내것도 출력<br>');
+        });
+
+        //같은 기능함수 www를 호출하면서 다르게 동작하도록 기능함수를 다르게 전달하는 형태
+        //GUI에서 버튼 클릭시 다른동작이 수행되도록 할떄 매우 많이 활용되는 기법
+        //이렇게 다른 함수를 파라미터로 받아 대신 실행하는 함수를 고차함수라고 부른다.
+    
+    </script>
+
+</head>
+<body>
+    
+</body>
+</html>

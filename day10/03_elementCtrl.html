@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crtl</title>
+    <script>
+        //1)이미지를 변경하는 코드가 작성된 영역
+        function change_image(){
+            //img요소를 찾아와서 속성값 src를 변경, css가 아니라서 선택자를 사용못한다.
+            //몸통영역안에 있는 요소를 찾는 기능이 document안에 존재
+            let img= document.getElementById('aa');
+            img.src='./img/cat.png';
+            img.alt='cat img';
+        }
+        //HTML 요소의 특정 스타일을 변경하는 기능함수
+        function changeColor(){
+            let h2s= document.getElementsByTagName('h2'); // 태그명 찾기는 여러개일수도 있어서 무조건 배열로 찾아준다.
+            //h2요소를 찾아서 배경색 변경, 태그명으로 찾기
+            let h2= h2s[0]; //요소가 배치된 순서부터
+            
+            h2.style.backgroundColor='yellow';
+            h2.style.color='red';
+            h2.style.border='2px solid blue';
+        }
+        //3)input요소의 값 제어
+        function sum(){
+            let in1= document.getElementsByName('in1')[0];
+            let in2= document.getElementsByName('in2')[0];
+
+            //input요소에 써있는 값을 얻어오기
+            let num1= in1.value;
+            let num2= in2.value;
+
+            //let result = num1 + num2; //모든 사용자의 입력은 문자열이다.
+            let result = parseInt(num1) + parseInt(num2);
+
+            let in3= document.getElementsByName('in3')[0];
+            in3.value= result;
+        }
+    </script>
+</head>
+<body>
+    <!-- 보통 js함수는 버튼 클릭같은 이벤트에 따라 처리할 작업을 써놓은 코드 영역이다. -->
+    <!-- 1)이미지 변경 -->
+    <img src="./img/coffee.gif" alt="coffee img" width="200px" id="aa">
+    <button onclick="change_image()">change image</button>
+    <hr>
+    <!-- 2)특정 요소의 스타일 변경 -->
+    <h2>This is Heading element</h2>
+    <button onclick="changeColor()">change - background color of h2</button><br><hr>
+    <!-- 3)input요소의 값 변경 -->
+    <input type="text" name="in1"><br>
+    <input type="text" name="in2"><br>
+    <button onclick="sum()">계산</button><br>
+    <input type="text" name="in3" placeholder="결과">
+</body>
+</html>

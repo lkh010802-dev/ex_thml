@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07ex</title>
+</head>
+<body>
+    <h1 id="title">안녕하세요</h1>
+    <button id="btn">변경</button>
+
+    <script>
+        let title = document.querySelector("#title");
+        let btn = document.querySelector("#btn");
+        btn.addEventListener('click', ()=>{
+            if(title.innerText == '안녕하세요'){
+                title.innerText = '반갑습니다';
+            }else{
+                title.innerText = '안녕하세요'
+            }
+        });
+    </script>
+</body>
+</html>

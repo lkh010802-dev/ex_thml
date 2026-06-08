@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>semantic</title>
+
+        <style>
+            #wrapper{
+                width: 600px;
+                border: 1px solid black;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            header{
+                background-color: aqua;
+                width: 100%;
+                padding: 3em;
+                box-sizing: border-box;
+            }
+            nav{
+                background-color: yellow;
+                width: 100%;
+                padding: 1em;
+                box-sizing: border-box;
+            }
+            main{
+                background-color: beige;
+                padding: 1em;
+                display: table-cell;
+                box-sizing: border-box;
+            }
+            aside{
+                background-color: cadetblue;
+                padding: 1em;
+                display: table-cell;
+                box-sizing: border-box;
+            }
+            footer{
+                background-color: black;
+                color: white;
+                padding: 1em;
+            }
+            nav ul{list-style: none;}
+            nav ul li{display: inline-block;}
+            nav ul li a{text-decoration: none; color: blue;}
+            nav ul li a:hover{text-decoration: underline; color: red;}
+
+           aside img{
+            width: 150px;
+           }
+
+        </style>
+    </head>
+    <body>
+        
+        <div id="wrapper">
+            <header><h1>밥</h1></header>
+            <nav>
+                <ul>
+                    <li><a href="">ee</a></li>
+                    <li><a href="">dddd</a></li>
+                    <li><a href="">dddd</a></li>
+                </ul>
+            </nav>
+            <main>
+                <section>
+                    <article>
+                        <h3>카레</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae dolorem dicta, ullam similique, veniam optio reiciendis natus provident distinctio ea quo minus ad! Suscipit at vero expedita eveniet distinctio voluptatum.</p>
+                    </article>
+                    <article>
+                        <h3>gkkg</h3>
+                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Unde mollitia doloremque modi sint, optio nemo aliquid. Recusandae natus suscipit, pariatur totam nobis corrupti veniam sit! Facere velit totam laudantium accusantium.</p>
+                    </article>
+                </section>
+            </main>
+            <aside>
+                <input type="text" placeholder="dddd">
+                <figure>
+                    <img src="../day6/image/cat.png" alt="cat">
+                    <figcaption>dddfsf</figcaption>
+                </figure>
+            </aside>
+            <footer>
+                <h5>COPYRIGHT &copy; ddsfsf</h5>
+            </footer>
+
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ex</title>
+
+</head>
+
+<body>
+    <h1 id="heading">자바 스크립트</h1>
+    <p id="text">위 텍스트를 클릭해 보세요.</p>
+    <button id="btn">눌러</button>
+    <script>
+        let heading = document.querySelector('#heading');
+        heading.onclick = function () {
+            heading.style.color = "red";
+        }
+        let name = prompt('뭐 써라');
+        document.write(`<b><big>${name}</big></b>`);
+        const btn = document.querySelector('#btn');
+
+        btn.onclick = function () {
+            console.log("버튼 눌림");
+        }
+        btn.addEventListener('click', function () {
+            console.log('클릭됨');
+            console.log('A');
+        });
+
+        btn.addEventListener('click', function () {
+            console.log('B');
+        });
+    </script>
+</body>
+
+</html>
