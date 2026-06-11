@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number</title>
+    <script>
+        // Number생성자 함수
+        //js의 기초타입이 수치형과는 다르다.
+        var a=10;
+        var b= new Number(10);
+
+        document.write(typeof(a)+'<br>');
+        document.write(typeof(b)+'<br>');
+        document.write((a==b)+'<br>');
+        document.write((a===b)+'<hr>');
+
+        //기능 알기
+        var num= new Number(123,456);
+
+        //지수표현식
+        document.write(num.toExponential()+'<br>');
+        document.write(num.toExponential(2)+'<br>');//소수점 2자리
+
+        //소수점을 특정자리수까지만 보여주는 문자열로 변환
+        document.write(num.toFixed()+ '<br>');
+        document.write(num.toFixed(2)+ '<br>');// 반올림 수행한다. 소수점 2자리까지
+
+        //진법 변환 표기
+        var num= new Number(10);
+        document.write(num.toString()+ '<br>');
+        document.write(num.toString(16)+ '<br>');
+        document.write(num.toString(8)+ '<br>');
+        document.write(num.toString(2)+ '<br>');
+
+        //수치형값을 가진 변수는 number객체로 자동 wrapping된다.
+        var a= 255; //수치형 number
+        document.write(a.toString(16)+'<br>'); //자동 wrapping
+
+        //수치형 값을 그대로 써도 wrapping되긴 하지만 실수일 때만 가능하다.
+        //document.write(10.toString()); //error
+        document.write(10.0.toString(2)+'<br>'); //소수점을 하나만 찍으면 뒤에 소수점이 올 차례인가? 하며 오류난다.
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

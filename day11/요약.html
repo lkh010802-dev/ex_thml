@@ -1,0 +1,83 @@
+중요도는 S급! Date, String, Math.random(), Array메소드, forEach(), map(), filter()
+        A급! setTimeout(), sort(), split(), replace, try-catch
+        b급! Number객체, throw, finally
+
+S급!{
+    Date객체
+    let d = new Date(); 현재시간 생성
+    d.getFullYear(); 년을 뜻하는 것인데 자주 쓰인다. 월은 0~11이라 주의
+    d.getTime()은 1970,01,01,09:00 ms기준이다. 시간계산할 때 쓰이는 편, 끝-시작
+    day = diff/(1000*60*60*24);이 날짜차이 계산공식이다.
+
+    String객체
+    .lenght는 글자의 수
+    .toUpperCase()는 다 대문자로
+    .toLowerCase()는 다 소문자로
+    .indexOf(찾는 문자)는 찾는 글자의 어디 위치인지, 못찾으면 -1
+    .match(찾는 문자)는 어디인지 문자열을 찾고 못찾으면 null
+    /i를 ''대신 쓰면 대소문자 무시
+    /g는 전체 검색이며 /ig로 둘다 적용이 가능 ex: str.match(/nice/ig);
+
+    Math객체
+    .floor()은 소수점을 버린다. .round()는 반올림 .ceil()은 올림이다.
+    .random()을 자주 쓰는데 0이상 1미만의 무작위 수가 나온다. 
+    ex: Math.floor(Math.random()*10)+1을 하면 1부터 10까지 랜덤한 숫자가 나오는 공식이다.
+
+    Array객체
+    합칠 배열.concat(합쳐질 배열)로 쓰인다.
+    .indexOf(인덱스 번호)은 위치번호가 나오고 없으면 -1이 나온다.
+    .push()는 뒤부터 추가 .pop()은 뒤에서 부터 제거
+    .shift()는 앞에서 제거 .reverse()는 순서 뒤집기 모두 원본이 변경된다.
+    .slice(자르는 첫 기준점,안써도 되는 끝 기준점)은 잘라서 생성한다.
+    .join('중간에 넣을 문자')을 쓰면 요소 중간중간에 문자가 들어간다.
+    
+    sort
+    .sotr()는 비교해서 정렬해주는데 문자열처럼 비교해서 앞자리가1이면 뭐든 1과 비슷하게 생각 
+    ex: sort(function(a,b){ return a-b; });이런 식으로 오름차순 표현, 내림차순은 a와 b의 순서를 바꿔 return값을 바꾸면 된다.
+    
+    filter
+    .filter()는 조건을 넣어주면 조건이 만족하는 요소만 가져간다.
+    ex: let result = arr.filter( function(e) {return e>=80;} );하면 80이상만
+
+    forEach
+    배열의 크기만큼 반복하는 반복하게 만들어주는 반복문이다. 반복종료가 불가능하며 break도 못쓰는게 특징이다.
+    ex:arr.forEach( function(e) {console.log(e);} );
+
+    map이 가장 중요한디
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+A급!{
+    setTimout
+    setTimout(함수명,1000);이면 ms가 기본적인 단위여서 1초 후에 실행
+
+    replace
+    글자를 바꾸어주는 명령어다. ex:str.replace("world","AI")를 하면 world가 AI로 변한다.
+    하나를 바꿈으로 전체를 바꿀려면 /g를 써야한다. 없으면 원본출력
+    str.replace(/ /g,"")가 공백제거인데 많이 쓰인다.
+
+    split
+    어떤 목록을 정해준 기준으로 나누어 준다. ex:let arr = str.split(",");면 ,을 기준으로 'a,b,c'를 'a','b','c'로 나누어 준다.
+    join은 split의 반대 개념으로 이건 똑같이 .join하고 ('기준점')을하면 기준점을 기준으로 합쳐준다.
+
+
+
+}
+B급!{
+    Number객체
+    number로 타입이 바뀐다. 실무에서 거의 안쓴다.
+    num.toFixed(2)이런건 쓴다 두자릿수 반올림
+    num.toString(진수) 진수에 몇진수인지 숫자 넣으면 그 진법으로 계산해준다.
+}

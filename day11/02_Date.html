@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date</title>
+    <script>
+        // js에 내장된 유용한 생성자 함수들[Date, Number, String, Math, Array]
+        // new키워드를 객체를 생성하여 사용
+
+        //1. Date: 날짜와 시간에 관련된 기능 및 변수를 설계
+        var a= new Date();
+        document.write(a+'<br>'); //참조변수를 출력하면 그 객체의 정보를 출력한다.
+        document.write(typeof(a)+'<br>'); //모든 객체의 자룧ㅇ은 object
+
+        //주요 기능들(멤버함수--메소드)
+        document.write(a.toDateString()+'<br>');
+        document.write(a.toLocaleString()+'<br>');
+        document.write(a.getYear()+'<br>');
+        document.write(a.getFullYear()+'<br>');
+        document.write(a.getMonth()+'<br>'); //0~~11
+        document.write(a.getDate()+'<br>');
+        document.write(a.getHours()+'<br>');
+        document.write(a.getMinutes()+'<br>');
+        document.write(a.getSeconds()+'<br>');
+        document.write(a.getTime()+'<br>'); //1970년 1월 1일 9시부터 ms마다 카운트를 센 값- timestmp
+        //경과시간 등을 계산할때 사용 [종료시간-시간시간] 
+        //Data객체가 생성될때의 시간으러 설정
+        //이를 변경할 수도 있다.
+        var b= new Date();
+        document.write(b.toLocaleString()+'<br>');
+        b.setFullYear(2017);
+        document.write(b.toLocaleString()+'<br>');
+
+        //객채를 생성할때 시간설정 가능
+        var c= new Date(2026, 7, 9); //2026년 8월 9일[달을 쓸 때 조심할 것]
+        document.write(c.toLocaleString()+'<br>');
+
+        c= new Date('2026. 7. 9');//문자열이면 그대로 반영
+        document.write(c.toLocaleString()+'<br>');
+
+        c= new Date('Wed Jun 10 2026');
+        document.write(c.toLocaleString()+'<br>');
+
+        c= new Date('Wed Jun 10 2026 13:40:13 GMT+0900');
+        document.write(c.toLocaleString()+'<br>');
+
+        c= new Date(1000); //1970.01.01.09:00기준 ms카운트 시간
+        document.write(c.toLocaleString()+'<br>');
+        document.write('<hr>');
+        
+
+        //두 날짜사이의 비교
+        var a= new Date('2026. 4. 29');
+        var b= new Date(); //오늘
+
+        var diff= b.getTime()- a.getTime();
+        var diff= b-a; //자동으로 getTime()으로 계산
+        //밀리초를 날짜수로 변경
+        var sec= diff/1000;
+        var min=sec/60;
+        var hr= min/60;
+        var day= hr/24;
+        document.write('두 날자의 일수 차이: '+day+ '일<br>');
+        day=Math.floor(day);
+        document.write('두 날자의 일수 차이: '+day+ '일<br>');
+
+        //[기준일 입력 완료]버튼을 클릭했을 때 수랭할 작업코드를 작성한 영역(함수)
+        function aaa(){
+            //in1 요소에 선택된 날짜 값 얻어오기
+            var in1= document.getElementById('in1');
+            var v= in1.value;
+            document.write(v+'<br>');
+
+            var a= new Date(v);// 위에서 입력받은 날짜로 date객체를 생성
+            var b= new Date();
+
+            var diff= b-a;
+            day= Math.floor(diff/(1000*60*60*24));
+
+            if(day>0){
+                document.write('오늘로 부터'+day+'일 전'+'<br>');
+            }else if(day<0){
+                document.write('오늘로 부터'+day+'일 후'+'<br>');
+            }else{
+                document.write('오늘'+'<br>')
+            }
+        }
+        function bbb(){
+            var d= new Date();
+
+            var h4= document.getElementById('hh');
+            h4.innerHTML= d.toLocaleString();
+
+            //1초마다 bbb()함수가 다시 실행되도록 설정한다.
+            setTimeout('bbb()',1000); //1000ms후에 bbb함수를 다시 실행한다.
+        }
+    </script>
+</head>
+<body>
+    <hr>
+    <h2>날짜 계산기</h2>
+    <input type="date" id="in1">
+    <button onclick="aaa()">기준일 입력 완료</button>
+
+    <hr>
+    <h2>현재시간 표시</h2>
+    <button onclick="bbb()">show clock</button>
+    <h4 id="hh">00:00:00</h4>
+</body>
+</html>

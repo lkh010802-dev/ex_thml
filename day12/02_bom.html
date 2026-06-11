@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js BOM</title>
+</head>
+<body>
+    <!-- BOM:브라우저를 관리한는 내장된 js 객체들 -->
+
+    <!-- 1.window: 최상위 객체(브라우저 창 전체를 관리) -->
+    <!--주요기능들-->
+    <!-- open(), close(): 새로운 웹문서 열기/닫기 -->
+    <button onclick="aaa()">naver</button>
+    <script>
+        function aaa(){
+            //window.open('https://www.naver.com'); // 기본 새탭으로 열린다.[target="_blink"]
+            //window.open('https://www.naver.com','_self');//두번쨰 파라미터: target속성
+
+            //세번째 파라미터로 옶션을 추가하면 새 창으로 뭽문서를 열 수 있따.
+            var option= 'width=500, heigh=200, left=200, top=100';
+            window.open('https://www.naver.com','_blank', option);
+        }
+    </script>
+    <hr>
+    <button onclick="bbb()">메세지 윈도우 창 띄우기</button>
+    <button onclick="ccc()">메세지 윈도우 창 닫기</button>
+    <script>
+        var win;
+        function bbb(){
+            win = window.open('','','width=500,height=200,left=200,top=300');
+            //새창의 제어는 win객체가 처리한다.
+            win.document.write('<h2>Hello new window</h2>');
+        }
+        function ccc(){
+            win.close();
+        }
+    </script>
+    <hr>
+    <!-- 윈도우 창 이동시키기 -->
+    <button onclick="eee()">open window</button>
+    <button onclick="fff()">movw window</button>
+
+    <script>
+        var win;
+        function eee(){
+            win=window.open('','','width=300, height=200');
+            win.document.write('오픈');
+            win.moveTo(300,100);//특정위치로 이동 xy축
+
+        }
+        function fff(){
+            //현재 위치기준으로 조금씩 이동
+            win.moveBy(10,20);
+            //움직였을 때 브라우저창이 앞으로 보이게
+            win.focus();
+        }
+    </script>
+
+    <hr>
+    <!-- 일정시간 후에 특정 함수가 실행되도록 setTimeout, setINterval, clearInterval -->
+    <button onclick="ggg()">3초 후에 경고창 띄우기</button>
+    <script>
+        function showAlert(){
+            alert('3초경과');
+        }
+        function ggg(){
+            window.setTimeout(showAlert, 3000); 
+        }
+    </script>
+    <br>
+    <h3 id="hh">0</h3>
+    <button onclick="hhh()">1초마다 카운트 증가</button>
+    <button onclick="iii()">카운트 종료</button>
+    <script>
+        function showCount(){
+            //h3요소에 써있는 숫자에 1더하기
+            var h3= document.querySelector('#hh');
+            //h3.innerHTML= h3.innerHTML+1;
+            h3.innerHTML = parseInt(h3.innerHTML)+1;
+        }
+        var interval_id;
+        function hhh(){// 1초마다 함수 실행
+           interval_id= window.setInterval(showCount, 1000);
+        }
+        function iii(){
+            window.clearInterval(interval_id);
+        }
+    </script>
+    <hr>
+    <!-- 기타 유용한 메소드 -->
+    <script>
+        //웹 브라우저의 인터넷 주소창의 URL은 기본적으로 한글이나 띄어쓰기 같은 문자는 사용 못한다.
+        //그래서 만약. 한글이나 띄어쓰기. 또는 특수문자 중 일부를 사용하고 싶다면
+        //URL에서 이닉가능한 문자로 변환해야 하는데 이를 url encoding(암호화) 이라고 한다.
+
+        //인코딩을 해주는 기능이 window최상위 꺡체가 가지고 있다.
+        //최상위 객체인window키워드는 생략 가능
+        var a= encodeURI('http://www.aaa.com/가나다 라마바..html');//파일명이 한글과 띄어쓰기
+        document.write('인코딩된 URL:'+a+'<br>');
+        //반대로 인코딩된 URL를 해동(decode)해주는 기능도 있다.
+        var b= decodeURI(a);
+        document.write('디코딩된 URL: '+b+'<br>');
+
+        //eval()= 문자열 데이터를 js코드인것처럼 해독하여 실행해주도록
+        var x= 10+2*6;
+        document.write(x+'<br>');
+
+        var x='10+2*6';
+        document.write(x+'<br>');
+
+        var x= eval('10+2*6');
+        document.write(x+'<br>');
+
+        //숫자로 변환이 가능한 모양이 아닌지 확인해주느 기능
+        document.write(isNaN(10)+'<br>');
+        document.write(isNaN('10')+'<br>');
+        document.write(isNaN('hello')+'<br>');
+
+        //내장함수인줄 알고 사용했던 모든 기능들은 window의 멤버함수
+
+    </script>
+    <hr>
+    <!-- 윈도우 최상위 객체의 멤버변수 중 주요함 객체를 소개 -->
+    <!--document 웹 문서를 관리하는 여러 기능을 가진 객체  -->
+    <script>
+        //원래는 winsow의 멤버이다.
+        window.document.write('이게 원래코드 방식이다.');
+
+    </script>
+    <hr>
+    <!-- screen: 모티너 사이즈 -->
+    <script>
+        //모니터의 해상도 정보
+        document.write('모니터 해상도: '+screen.width+'*'+screen.height+'<br>');
+        document.write('작업표시줄 제외 해상도: '+screen.availWidth+'*'+screen.availHeight+'<br>');
+
+        //웹 브라우저 창의 해상도는 window객체가 가지고 있는 정보
+        document.write('브라우저 창의 크기: ' +window.innerWidth+'*'+window.innerHeight+'<br>');
+    </script>
+    <hr>
+
+    <!-- 버튼으로 전테화면으로 확대할 떄 활용 -->
+    <button onclick="jjj()">전체화면 윈도우</button>
+
+    <script>
+        function jjj(){
+            var option =
+                "width=" + screen.availWidth +
+                ",height=" + screen.availHeight;
+
+            window.open('', '', option);
+        }
+    </script>
+
+    <hr>
+    <!-- location: URL 정보관리 객체 -->
+    <script>
+        //location객체의 주요 멤버변수(속성)
+        document.write(location.href+'<br>');
+        document.write(location.protocol+'<br>');
+        document.write(location.pathname+'<br>');
+
+    </script>
+
+    <!-- location객체의 주요 기능함수들 -->
+    <button onclick="mmm()">새로운 문서 열기</button>
+    <button onclick="kkk()">새로운 문서로 대체하여 열기</button>
+    <button onclick="nnn()">현재 문서 다시열기(새로고침)</button>
+
+    <script>
+        function mmm(){
+            // location.assign('https://www.naver.com');
+            location.href='https://www.naver.com';
+        }
+        function kkk(){
+            location.replace('https://www.naver.com');
+        }
+        function nnn(){
+            location.reload('https://www.naver.com');
+        }
+    </script>
+
+    <hr>
+
+    <!-- history: 방문한 URL정보를 가지고 있다. -->
+    <script>
+        document.write('방문한 페이지 수: '+history.length+'<br>');
+    </script>
+
+    <button onclick="history.back()">뒤로가기</button>
+    <button onclick="history.forward()">앞으로 가기</button>
+    <button onclick="history.go">2칸 뒤</button>
+
+    <hr>
+    <!-- nacigator: 브라우저의 정보 관리 객체: 나중에 새로운 기능들이 이 객체의 하위 멤버로 추가된다.(위치기반 서비스, 웹캠) -->
+    <script>
+        document.write(navigator.appCodeName+'<br>');
+        document.write(navigator.appName+'<br>');
+        document.write(navigator.appVersion+'<br>');
+        document.write(navigator.platform+'<br>');// 사용자가 접속하는 환경은 파악랗 수 있다. 즉 대응이 가능하다.
+        document.write(navigator.userAgent+'<br>');
+    </script>
+
+</body>
+</html>
