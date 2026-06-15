@@ -1,0 +1,47 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.snap-container {
+    height: 100vh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+.snap-section {
+    min-height: 100vh;
+    padding: 84px 20px 20px;
+    display: grid;
+    place-items: center;
+    scroll-snap-align: start;
+}
+
+.hero {
+    background: #ffd400;
+    color: #111;
+}
+
+.featured-menu {
+    background: #fff;
+}
+
+.weather {
+    background: #111;
+    color: #fff;
+}
+
+.store {
+    background: #ffd400;
+}
+
+.news {
+    background: #fff;
+}
+
+.business {
+    background: #111;
+    color: #fff;
+}

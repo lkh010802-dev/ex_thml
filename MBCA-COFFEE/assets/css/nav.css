@@ -1,0 +1,50 @@
+.global-menu {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  z-index: 999;
+  width: min(85%, 360px);
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  background: #111;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.5s ease, visibility 0.5s;
+}
+
+.global-menu.is-open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.menu-panel {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+}
+
+.menu-panel a {
+  padding: 16px 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 1px solid #333;
+}
+
+.menu-panel a:hover {
+  color: #ffd400;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.social-links a {
+  flex: 1;
+  text-align: center;
+  border: 2px solid #ffd400;
+  border-radius: 8px;
+}
