@@ -1,3 +1,39 @@
+<?php
+$events = [
+  [
+    'badge' => '진행중',
+    'title' => '학생 인증 20% 할인',
+    'desc' => '학생이라면 MBCA 시즌 메뉴를 더 가볍게 즐겨보세요.',
+    'period' => '2026.06.01 - 2026.08.31',
+    'image' => '/coffee/assets/images/cat.png'
+  ],
+  [
+    'badge' => 'NEW',
+    'title' => '여름 음료 출시',
+    'desc' => '망고, 라임, 블루레몬으로 채운 여름 한정 메뉴.',
+    'period' => '2026.06.15 - 2026.07.31',
+    'image' => '/coffee/assets/images/cat.png'
+  ],
+  [
+    'badge' => '쿠폰',
+    'title' => '신규 회원 웰컴 쿠폰',
+    'desc' => '가입 즉시 아메리카노 할인 쿠폰을 드립니다.',
+    'period' => '상시 진행',
+    'image' => '/coffee/assets/images/cat.png'
+  ]
+];
+?>
+<?php
+$weatherRecommend = [
+  'location' => 'Seoul',
+  'temperature' => '29°C',
+  'condition' => '맑음',
+  'summary' => '햇살이 강한 오후, 시원한 음료가 잘 어울려요.',
+  'menuName' => '아이스 아메리카노',
+  'description' => '깔끔한 커피의 청량감으로 더운 날씨를 가볍게 넘겨보세요.',
+  'image' => '/coffee/assets/images/cat.png'
+];
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,37 +43,170 @@
   <link rel="stylesheet" href="/coffee/assets/css/header.css">
   <link rel="stylesheet" href="/coffee/assets/css/nav.css">
   <link rel="stylesheet" href="/coffee/assets/css/home.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 <body>
   <?php include __DIR__ . '/includes/header.php'; ?>
 
 <main class="snap-container">
   <section class="snap-section hero">
-    <h1>MBCA COFFEE</h1>
-  </section>
+    <div class="hero-copy">
+      <p class="hero-kicker">학생이라면 더 가볍게</p>
 
-  <section class="snap-section featured-menu">
-    <h2>대표 메뉴</h2>
-  </section>
+      <h1>
+        <span>MBCA</span>
+        <strong>COFFEE</strong>
+      </h1>
 
-  <section class="snap-section weather">
-    <h2>오늘의 날씨 추천</h2>
-  </section>
+      <p class="hero-label">STUDENTS FREE</p>
 
-  <section class="snap-section store">
-    <h2>가까운 매장 찾기</h2>
-  </section>
+      <p class="hero-desc">
+        MBCA COFFEE는 학생들의 일상에<br>
+        작은 여유와 활력을 더합니다. 
+      </p>
 
-  <section class="snap-section news">
-    <h2>새로운 소식</h2>
-  </section>
+      <div class="hero-buttons">
+        <a class="hero-button primary" href="/coffee/pages/menu.php">메뉴 보기</a>
+        <a class="hero-button secondary" href="/coffee/pages/stores.php">매장 찾기</a>
+      </div>
+    </div>
 
-  <section class="snap-section business">
-    <h2>창업 · 채용</h2>
+    <div class="scroll-guide">
+      <span>⌄</span>
+      <small>SCROLL</small>
+    </div>
   </section>
+<section class="snap-section season-section">
+  <div class="season-bg" aria-hidden="true"></div>
+
+  <div class="swiper season-swiper">
+    <div class="swiper-wrapper">
+      <article class="swiper-slide season-slide"
+        data-bg="/coffee/assets/images/MBCA-Watermelon Crush Smoothie-bg.png">
+        <div class="season-copy">
+          <span class="season-watermark">Crush!<br>Watermelon</span>
+          <p class="season-label">수박 크러쉬 스무디</p>
+          <h2>여름을 한 컵에 담다</h2>
+          <p>시원한 수박의 청량함을 담은 <br>SUMMER시즌 메뉴</p>
+          <strong>Watermelon Crush Smoothie</strong>
+        </div>
+        <div class="season-visual">
+          <img src="/coffee/assets/images/MBCA-Watermelon Crush Smoothie.png" alt="Watermelon Smoothie">
+        </div>
+      </article>
+
+      <article class="swiper-slide season-slide"
+        data-bg="/coffee/assets/images/MBCA-mango-bg.png">
+        <div class="season-copy">
+          <span class="season-watermark">MANGO COCO</span>
+          <p class="season-label">망고 코코 스무디</p>
+          <h2>햇살처럼 달콤하게</h2>
+          <p>망고의 달콤함이 부드럽게 퍼지는 시즌 스무디</p>
+          <strong>Mango Coco Smoothie</strong>
+        </div>
+        <div class="season-visual">
+          <img src="/coffee/assets/images/MBCA-mango.png" alt="Mango Coco Smoothie">
+        </div>
+      </article>
+
+      <article class="swiper-slide season-slide"
+        data-bg="/coffee/assets/images/MBCA-Lychee-bg.png">
+        <div class="season-copy">
+          <span class="season-watermark">Cool, Clean<br>Salted</span>
+          <p class="season-label">솔티드 리치</p>
+          <h2>한 모금의 짭짤한 청량감</h2>
+          <p>달콤함 끝에 스치는 바다의 한 조각</p>
+          <strong>Salted Lychee</strong>
+        </div>
+        <div class="season-visual">
+          <img src="/coffee/assets/images/MBCA-Lychee.png" alt="Lime Ade">
+        </div>
+      </article>
+
+      <article class="swiper-slide season-slide"
+        data-bg="/coffee/assets/images/MBCA-Patbingsu Parfait-bg.png">
+        <div class="season-copy">
+          <span class="season-watermark">SWEET SUMMER<br>IN EVERY SPOON</span>
+          <p class="season-label">팥빙 파르페</p>
+          <h2>달콤함을 층층이 쌓다</h2>
+          <p>추억은 달콤하게, 여름은 시원하게</p>
+          <strong>Patbingsu Parfait</strong>
+        </div>
+        <div class="season-visual">
+          <img src="/coffee/assets/images/MBCA-Patbingsu Parfait.png" alt="Blue Lemon">
+        </div>
+      </article>
+    </div>
+    <div class="season-pagination"></div>
+  </div>
+</section>
+
+<section class="snap-section event-section">
+  <div class="event-inner">
+    <div class="event-head">
+      <p>MBCA EVENT</p>
+      <h2>지금 진행 중인 혜택</h2>
+      <a href="/coffee/pages/news.php?type=event">전체 이벤트 보기</a>
+    </div>
+
+    <div class="event-grid">
+      <?php foreach ($events as $index => $event): ?>
+        <article class="event-card <?= $index === 0 ? 'event-card-main' : '' ?>">
+          <img src="<?= $event['image'] ?>" alt="<?= $event['title'] ?>">
+          <div class="event-info">
+            <span><?= $event['badge'] ?></span>
+            <h3><?= $event['title'] ?></h3>
+            <p><?= $event['desc'] ?></p>
+            <small><?= $event['period'] ?></small>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section class="snap-section weather-section">
+  <div class="weather-inner">
+    <div class="weather-copy">
+      <p class="weather-label">TODAY WEATHER PICK</p>
+      <h2>오늘 날씨엔<br><?= $weatherRecommend['menuName'] ?></h2>
+      <p><?= $weatherRecommend['summary'] ?></p>
+      <strong><?= $weatherRecommend['description'] ?></strong>
+    </div>
+
+    <div class="weather-card">
+      <div>
+        <span><?= $weatherRecommend['location'] ?></span>
+        <h3><?= $weatherRecommend['temperature'] ?></h3>
+        <p><?= $weatherRecommend['condition'] ?></p>
+      </div>
+
+      <img
+        src="<?= $weatherRecommend['image'] ?>"
+        alt="<?= $weatherRecommend['menuName'] ?>"
+      >
+    </div>
+  </div>
+</section>
 </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="/coffee/assets/js/season-menu.js"></script>
   <script src="/coffee/assets/js/lang.js"></script>
   <script src="/coffee/assets/js/nav.js"></script>
+
+  <?php
+session_start();
+?>
+
+<?php if(isset($_SESSION['userid'])): ?>
+
+<p>
+<?= $_SESSION['name'] ?> 님 환영합니다.
+(<?= $_SESSION['role'] ?>)
+</p>
+
+<?php endif; ?>
+
 </body>
 </html>
