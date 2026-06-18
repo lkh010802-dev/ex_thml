@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
+    $isPinned =
+    isset($_POST['is_pinned'])
+    ? 1
+    : 0;
 
     $writer = $_SESSION['userid'];
 
@@ -48,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<link rel="stylesheet" href="/coffee/assets/css/admin.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>.</title>
@@ -95,6 +100,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         rows="10"
         required
     ></textarea>
+    <label>
+
+    <input
+        type="checkbox"
+        name="is_pinned"
+        value="1"
+    >
+
+    중요공지로 고정
+
+    </label>
 
     <button type="submit">
         공지 등록

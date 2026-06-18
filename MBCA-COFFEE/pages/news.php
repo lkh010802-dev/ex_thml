@@ -12,6 +12,22 @@ MBCA COFFEE COMMUNITY PAGE
 session_start();
 
 $boardType = $_GET['type'] ?? 'notice';
+$keyword = trim(
+    $_GET['keyword'] ?? ''
+);
+$page = (int)(
+    $_GET['page'] ?? 1
+);
+
+if($page < 1){
+    $page = 1;
+}
+
+$perPage = 10;
+
+$offset =
+    ($page - 1)
+    * $perPage;
 
 include __DIR__ . '/../config/database.php';
 
@@ -22,20 +38,22 @@ function e($value) {
         'UTF-8'
     );
 }
-$boardType = $_GET['type'] ?? 'notice';
-
 if ($boardType === 'notice') {
-
-    $result = mysqli_query(
-        $db,
-        "SELECT
-            id,
-            title,
-            views,
-            created_at
-         FROM notices
-         ORDER BY id DESC"
-    );
+$result = mysqli_query(
+    $db,
+    "SELECT
+        id,
+        title,
+        views,
+        created_at,
+        is_pinned
+     FROM notices
+     WHERE title LIKE '%$keyword%'
+ORDER BY
+is_pinned DESC,
+id DESC
+LIMIT $offset, $perPage"
+);
 
     $rows = [];
 
@@ -64,8 +82,10 @@ $result = mysqli_query(
         status,
         views,
         created_at
-     FROM qna
-     ORDER BY id DESC"
+FROM qna
+WHERE title LIKE '%$keyword%'
+ORDER BY id DESC
+LIMIT $offset, $perPage"
 );
 
     $rows = [];
@@ -99,7 +119,8 @@ else {
             id,
             title,
             views,
-            created_at
+            created_at,
+            is_pinned
          FROM notices"
     );
 
@@ -143,6 +164,34 @@ else {
         fn($a, $b) => $b['id'] <=> $a['id']
     );
 }
+if ($boardType === 'notice') {
+
+    $countResult = mysqli_query(
+        $db,
+        "SELECT COUNT(*)
+         FROM notices
+         WHERE title LIKE '%$keyword%'"
+    );
+
+} else {
+
+    $countResult = mysqli_query(
+        $db,
+        "SELECT COUNT(*)
+         FROM qna
+         WHERE title LIKE '%$keyword%'"
+    );
+}
+
+$totalRows =
+    mysqli_fetch_row(
+        $countResult
+    )[0];
+
+$totalPages = max(
+    1,
+    ceil($totalRows / $perPage)
+);
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -170,6 +219,28 @@ else {
     </nav>
 
       <div class="board-tools">
+
+
+<form method="get">
+
+    <input
+        type="hidden"
+        name="type"
+        value="<?= $boardType ?>"
+    >
+
+    <input
+        type="text"
+        name="keyword"
+        value="<?= e($keyword) ?>"
+        placeholder="검색어 입력"
+    >
+
+    <button type="submit">
+        검색
+    </button>
+
+</form>
         <?php
 if(
     $boardType === 'notice' &&
@@ -186,7 +257,13 @@ if(
 </a>
 
 <?php endif; ?>
-        <p>전체 <strong><?= count($rows) ?></strong>건 현재 페이지 <strong>1/1</strong></p>
+        <p>
+전체 <strong><?= $totalRows ?></strong>건
+현재 페이지
+<strong>
+<?= $page ?>/<?= $totalPages ?>
+</strong>
+</p>
       <?php if($boardType === 'qna'): ?>
 
 <a
@@ -199,26 +276,40 @@ if(
 <?php endif; ?>
       <div class="board-table-wrap">
         <table class="board-table">
-          <thead>
-            <tr>
+<thead>
+<tr>
 
-              <th>제목</th>
-              <th>작성자</th>
-              <th>조회 수</th>
-              <?php if ($boardType === 'qna'): ?>
-              <th>날짜</th>
-              <th>상태</th>
+    <th>번호</th>
+    <th>제목</th>
+    <th>작성자</th>
+    <th>날짜</th>
+    <th>조회수</th>
 
-              <?php endif; ?>
-            </tr>
-          </thead>
+    <?php if ($boardType === 'qna'): ?>
+        <th>상태</th>
+    <?php endif; ?>
+
+</tr>
+</thead>
           <tbody>
             <?php foreach ($rows as $row): ?>
               <tr>
                 <td><?= e($row['id']) ?></td>
                 <td class="board-subject">
-                <a href="/coffee/pages/news_view.php?id=<?= $row['id'] ?>&type=<?= $row['type'] ?>">
-               <?= e($row['title']) ?>
+
+<a href="/coffee/pages/news_view.php?id=<?= $row['id'] ?>&type=<?= $row['type'] ?>">
+
+<?php if(
+    isset($row['is_pinned'])
+    &&
+    $row['is_pinned']
+): ?>
+📌
+<?php endif; ?>
+
+<?= e($row['title']) ?>
+
+</a>
                 </a>
                 </td>
                 <?php if ($boardType === 'qna'): ?>
@@ -235,6 +326,25 @@ if(
             <?php endforeach; ?>
           </tbody>
         </table>
+        <div class="pagination">
+
+<?php for(
+    $i = 1;
+    $i <= $totalPages;
+    $i++
+): ?>
+
+<a
+href="?type=<?= $boardType ?>&keyword=<?= urlencode($keyword) ?>&page=<?= $i ?>"
+>
+
+<?= $i ?>
+
+</a>
+
+<?php endfor; ?>
+
+</div>
       </div>
     </section>
   </main>

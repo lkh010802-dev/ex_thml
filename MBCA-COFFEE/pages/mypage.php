@@ -29,7 +29,7 @@ $qnaResult = mysqli_query(
      FROM qna
      WHERE userid = '$userid'
      ORDER BY id DESC
-     LIMIT 5"
+     LIMIT 3"
 );
 
 ?>
@@ -65,12 +65,17 @@ $qnaResult = mysqli_query(
         </span>
 
 
-        <?php if($user['role'] === 'admin'): ?>
-            <span class="admin-badge">
-            관리자
-            </span>
-        <?php endif; ?>
+            <?php if($user['role'] === 'admin'): ?>
 
+                <span class="admin-badge">
+                    관리자
+                </span>
+
+                <a href="/coffee/pages/admin.php">
+                    관리자 대시보드
+                </a>
+
+            <?php endif; ?>
         <ul>
             <li>이메일 : <?= $user['email'] ?></li>
             <li>가입일 :<?= date('Y-m-d', strtotime($user['created_at'])) ?></li>
@@ -92,6 +97,10 @@ $qnaResult = mysqli_query(
                 <strong>이메일</strong>
                 <span><?= $user['email'] ?></span>
             </div>
+                    <a href="/coffee/pages/mypage_password.php">
+                         비밀번호 변경
+                  </a>
+
 
             <a href="/coffee/pages/mypage_edit.php">
     정보 수정
@@ -134,37 +143,6 @@ $qnaResult = mysqli_query(
     <?php endif; ?>
 
 </article>
-<?php if(mysqli_num_rows($qnaResult) > 0): ?>
-
-    <?php while($qna = mysqli_fetch_assoc($qnaResult)): ?>
-
-    <div class="qna-item">
-
-        <strong>
-            <a href="/coffee/pages/news_view.php?id=<?= $qna['id'] ?>&type=qna">
-                <?= htmlspecialchars($qna['title']) ?>
-            </a>
-        </strong>
-
-        <span>
-            <?= $qna['status'] === 'answered'
-                ? '답변완료'
-                : '답변대기' ?>
-        </span>
-
-        <small>
-            <?= date('Y-m-d', strtotime($qna['created_at'])) ?>
-        </small>
-
-    </div>
-
-    <?php endwhile; ?>
-
-<?php else: ?>
-
-    <p>등록된 문의가 없습니다.</p>
-
-<?php endif; ?>
         </article>
 
         <article class="mypage-box">

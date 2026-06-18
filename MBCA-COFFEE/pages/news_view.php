@@ -69,8 +69,8 @@ if (
     );
     exit;
 }
-
 ?>
+
 
 <!DOCTYPE html>
 
@@ -128,6 +128,7 @@ if (
     </span>
 
 </div>
+
 
 <hr>
 
@@ -233,8 +234,64 @@ if ($type === 'qna') {
 <a href="/coffee/pages/news.php?type=<?= $type ?>">
 목록으로
 </a>
+<?php if(
+    isset($_SESSION['role']) &&
+    $_SESSION['role'] === 'admin' &&
+    $type === 'notice'
+): ?>
 
+<a href="/coffee/pages/notice_edit.php?id=<?= $id ?>">
+수정
+</a>
+
+<a
+href="/coffee/pages/notice_delete.php?id=<?= $id ?>"
+onclick="return confirm('삭제하시겠습니까?');"
+>
+삭제
+</a>
+
+<?php endif; ?>
 </section>
+<?php if(
+    $type === 'qna'
+    &&
+    isset($_SESSION['userid'])
+    &&
+    $_SESSION['userid'] === $post['userid']
+): ?>
+
+<a href="/coffee/pages/qna_edit.php?id=<?= $id ?>">
+수정
+</a>
+
+<?php endif; ?>
+
+
+<?php if(
+    $type === 'qna'
+    &&
+    isset($_SESSION['userid'])
+    &&
+    (
+        $_SESSION['userid'] === $post['userid']
+        ||
+        (
+            isset($_SESSION['role'])
+            &&
+            $_SESSION['role'] === 'admin'
+        )
+    )
+): ?>
+
+<a
+href="/coffee/pages/qna_delete.php?id=<?= $id ?>"
+onclick="return confirm('삭제하시겠습니까?');"
+>
+문의 삭제
+</a>
+
+<?php endif; ?>
 
 </main>
 

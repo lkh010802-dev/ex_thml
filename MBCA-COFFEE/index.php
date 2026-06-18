@@ -1,27 +1,24 @@
 <?php
-$events = [
-  [
-    'badge' => '진행중',
-    'title' => '학생 인증 20% 할인',
-    'desc' => '학생이라면 MBCA 시즌 메뉴를 더 가볍게 즐겨보세요.',
-    'period' => '2026.06.01 - 2026.08.31',
-    'image' => '/coffee/assets/images/cat.png'
-  ],
-  [
-    'badge' => 'NEW',
-    'title' => '여름 음료 출시',
-    'desc' => '망고, 라임, 블루레몬으로 채운 여름 한정 메뉴.',
-    'period' => '2026.06.15 - 2026.07.31',
-    'image' => '/coffee/assets/images/cat.png'
-  ],
-  [
-    'badge' => '쿠폰',
-    'title' => '신규 회원 웰컴 쿠폰',
-    'desc' => '가입 즉시 아메리카노 할인 쿠폰을 드립니다.',
-    'period' => '상시 진행',
-    'image' => '/coffee/assets/images/cat.png'
-  ]
-];
+
+require_once __DIR__ . '/config/database.php';
+
+$eventsResult = mysqli_query(
+    $db,
+    "
+    SELECT *
+    FROM events
+    WHERE end_date >= CURDATE()
+    ORDER BY id DESC
+    LIMIT 3
+    "
+);
+
+$events = [];
+
+while($row = mysqli_fetch_assoc($eventsResult)){
+    $events[] = $row;
+}
+
 ?>
 <?php
 $weatherRecommend = [
@@ -146,19 +143,22 @@ $weatherRecommend = [
     <div class="event-head">
       <p>MBCA EVENT</p>
       <h2>지금 진행 중인 혜택</h2>
-      <a href="/coffee/pages/news.php?type=event">전체 이벤트 보기</a>
+      <a href="/coffee/pages/event.php">전체 이벤트 보기</a>
     </div>
 
     <div class="event-grid">
       <?php foreach ($events as $index => $event): ?>
         <article class="event-card <?= $index === 0 ? 'event-card-main' : '' ?>">
-          <img src="<?= $event['image'] ?>" alt="<?= $event['title'] ?>">
-          <div class="event-info">
-            <span><?= $event['badge'] ?></span>
-            <h3><?= $event['title'] ?></h3>
-            <p><?= $event['desc'] ?></p>
-            <small><?= $event['period'] ?></small>
-          </div>
+          <a href="/coffee/pages/event_view.php?id=<?= $event['id'] ?>">
+              <img src="<?= $event['thumbnail'] ?>" alt="<?= $event['title'] ?>">
+              <div class="event-info">
+                  <span><?= $event['badge'] ?></span>
+                  <h3><?= $event['title'] ?></h3>
+                  <p><?= $event['description'] ?></p>
+                  <small><?= $event['period'] ?></small>
+              </div>
+          </a>
+          </article>
         </article>
       <?php endforeach; ?>
     </div>

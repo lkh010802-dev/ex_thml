@@ -1,24 +1,22 @@
 <?php
-$stores = [
-  [
-    'name' => 'MBCA COFFEE 홍대점',
-    'address' => '서울 마포구 와우산로 123',
-    'phone' => '02-123-4567',
-    'hours' => '08:00 - 22:00'
-  ],
-  [
-    'name' => 'MBCA COFFEE 강남점',
-    'address' => '서울 강남구 테헤란로 45',
-    'phone' => '02-222-3333',
-    'hours' => '07:30 - 23:00'
-  ],
-  [
-    'name' => 'MBCA COFFEE 부산서면점',
-    'address' => '부산 부산진구 중앙대로 77',
-    'phone' => '051-123-9876',
-    'hours' => '09:00 - 22:00'
-  ]
-];
+
+require_once __DIR__ . '/../config/database.php';
+
+$result = mysqli_query(
+    $db,
+    "
+    SELECT *
+    FROM stores
+    ORDER BY id DESC
+    "
+);
+
+$stores = [];
+
+while($row = mysqli_fetch_assoc($result)){
+    $stores[] = $row;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -29,6 +27,7 @@ $stores = [
   <link rel="stylesheet" href="/coffee/assets/css/header.css">
   <link rel="stylesheet" href="/coffee/assets/css/nav.css">
   <link rel="stylesheet" href="/coffee/assets/css/store.css">
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=189902bbe93b113649d2eeeb9e4b90e9"></script>
 </head>
 <body>
   <?php include __DIR__ . '/../includes/header.php'; ?>
@@ -46,9 +45,8 @@ $stores = [
 
     <section class="store-layout">
       <div class="store-map">
-        <p>카카오 지도 API 영역</p>
+       <div id="map"></div>
       </div>
-
       <div class="store-list">
         <?php foreach ($stores as $store): ?>
           <article class="store-card">
@@ -61,7 +59,26 @@ $stores = [
       </div>
     </section>
   </main>
-
   <script src="/coffee/assets/js/nav.js"></script>
+  <script>
+
+const container =
+    document.getElementById('map');
+
+const options = {
+    center: new kakao.maps.LatLng(
+        37.5665,
+        126.9780
+    ),
+    level: 5
+};
+
+const map =
+    new kakao.maps.Map(
+        container,
+        options
+    );
+
+</script>
 </body>
 </html>

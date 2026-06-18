@@ -1,38 +1,23 @@
 <?php
+
+require_once __DIR__ . '/../config/database.php';
+
 $isAdmin = true;
 
-$events = [
-  [
-    'id' => 1,
-    'title' => '여름 시즌 할인 이벤트',
-    'description' => '시즌 메뉴와 함께 전 메뉴 최대 20% 할인 혜택을 제공합니다.',
-    'image' => '/coffee/assets/images/cat.png',
-    'start_date' => '2026-06-01',
-    'end_date' => '2026-08-31',
-    'status' => 'active'
-  ],
-  [
-    'id' => 2,
-    'title' => '신규 회원 웰컴 쿠폰',
-    'description' => 'MBCA COFFEE 회원가입 시 아메리카노 할인 쿠폰을 드립니다.',
-    'image' => '/coffee/assets/images/cat.png',
-    'start_date' => '2026-06-10',
-    'end_date' => '2026-12-31',
-    'status' => 'active'
-  ],
-  [
-    'id' => 3,
-    'title' => '봄 이벤트',
-    'description' => '봄 시즌 메뉴 구매 고객 대상 스탬프 적립 이벤트입니다.',
-    'image' => '/coffee/assets/images/cat.png',
-    'start_date' => '2026-03-01',
-    'end_date' => '2026-04-30',
-    'status' => 'ended'
-  ]
-];
+$sql = "
+SELECT *
+FROM events
+ORDER BY id DESC
+";
+
+$result = mysqli_query($db, $sql);
 
 function e($value) {
-  return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(
+        (string)$value,
+        ENT_QUOTES,
+        'UTF-8'
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -61,20 +46,26 @@ function e($value) {
     </section>
 
     <section class="event-grid" id="eventGrid">
-      <?php foreach ($events as $event): ?>
-        <?php $isEnded = $event['status'] === 'ended'; ?>
+      <?php while($event = mysqli_fetch_assoc($result)): ?>
+        <?php
+
+          $isEnded =
+              strtotime(date('Y-m-d'))
+              >
+              strtotime($event['end_date']);
+
+          ?>
         <article
           class="event-card <?= $isEnded ? 'is-ended' : '' ?>"
           data-title="<?= e($event['title']) ?>"
           data-description="<?= e($event['description']) ?>"
         >
-          <?php if ($isAdmin && !$isEnded): ?>
-            <button class="admin-end-button" type="button">종료</button>
-          <?php endif; ?>
-
-          <a href="#" aria-label="<?= e($event['title']) ?> 상세 보기">
+          <a
+              href="/coffee/pages/event_view.php?id=<?= $event['id'] ?>"
+              aria-label="<?= e($event['title']) ?> 상세 보기"
+          >
             <div class="event-image">
-              <img src="<?= e($event['image']) ?>" alt="<?= e($event['title']) ?>">
+              <img src="<?= e($event['thumbnail']) ?>" alt="<?= e($event['title']) ?>">
               <?php if ($isEnded): ?>
                 <div class="ended-overlay">
                   <strong>이벤트 종료</strong>
@@ -83,16 +74,20 @@ function e($value) {
             </div>
 
             <div class="event-info">
-              <span class="event-status <?= $isEnded ? 'ended' : 'active' ?>">
-                <?= $isEnded ? '종료' : '진행중' ?>
+              <?php if(!$isEnded): ?>
+
+              <span class="event-status active">
+                  진행중
               </span>
+
+              <?php endif; ?>
               <h2><?= e($event['title']) ?></h2>
               <p><?= e($event['description']) ?></p>
               <small><?= e($event['start_date']) ?> - <?= e($event['end_date']) ?></small>
             </div>
           </a>
         </article>
-      <?php endforeach; ?>
+      <?php endwhile; ?>
     </section>
 
     <p class="event-empty" id="eventEmpty">검색 결과가 없습니다.</p>

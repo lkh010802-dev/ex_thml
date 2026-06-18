@@ -17,14 +17,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
+    $isPinned =
+    isset($_POST['is_pinned'])
+    ? 1
+    : 0;
 
     mysqli_query(
         $db,
-        "UPDATE notices
-         SET
-            title='$title',
-            content='$content'
-         WHERE id=$id"
+"UPDATE notices
+ SET
+    title='$title',
+    content='$content',
+    is_pinned=$isPinned
+ WHERE id=$id"
     );
 
     header(
@@ -45,6 +50,7 @@ $post = mysqli_fetch_assoc($result);
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<link rel="stylesheet" href="/coffee/assets/css/admin.css">
 
 <meta charset="UTF-8">
 
@@ -80,6 +86,18 @@ name="content"
 rows="10"
 required
 ><?= htmlspecialchars($post['content']) ?></textarea>
+<label>
+
+<input
+    type="checkbox"
+    name="is_pinned"
+    value="1"
+    <?= $post['is_pinned'] ? 'checked' : '' ?>
+>
+
+중요공지 고정
+
+</label>
 
 <button type="submit">
 수정 완료

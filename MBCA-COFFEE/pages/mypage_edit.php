@@ -56,7 +56,7 @@ $user = mysqli_fetch_assoc($result);
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
+<link rel="stylesheet" href="/coffee/assets/css/admin.css">
 <meta charset="UTF-8">
 
 <title>정보 수정</title>
