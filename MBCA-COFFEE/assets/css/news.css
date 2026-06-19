@@ -142,3 +142,37 @@
         width: 100%;
     }
 }
+
+.post-navigation {
+
+    margin-top: 30px;
+
+    padding-top: 20px;
+
+    border-top: 2px solid #ddd;
+
+}
+
+.post-navigation div {
+
+    margin-bottom: 12px;
+
+}
+
+.post-navigation a {
+
+    margin-left: 10px;
+
+    color: #111;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+}
+
+.post-navigation a:hover {
+
+    text-decoration: underline;
+
+}

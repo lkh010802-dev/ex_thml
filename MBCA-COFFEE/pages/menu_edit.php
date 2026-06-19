@@ -33,11 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     isset($_POST['is_best'])
     ? 1
     : 0;
+    
 
 $is_season =
     isset($_POST['is_season'])
     ? 1
     : 0;
+    $temperature_type =
+    $_POST['temperature_type'];
 
     $imagePath = $menu['image'];
         if (
@@ -68,10 +71,9 @@ $is_season =
         SET
             name='$name',
             category='$category',
+            temperature_type='$temperature_type',
             price='$price',
             description='$description',
-            nutrition='$nutrition',
-            image='$imagePath',
             nutrition='$nutrition',
             image='$imagePath',
             is_best='$is_best',
@@ -133,6 +135,27 @@ value="food"
 value="goods"
 <?= $menu['category']=='goods' ? 'selected' : '' ?>>
 상품
+</option>
+
+</select>
+
+</p>
+
+<p>
+온도 타입<br>
+
+<select name="temperature_type">
+
+<option
+value="ice"
+<?= $menu['temperature_type']=='ice' ? 'selected' : '' ?>>
+ICE
+</option>
+
+<option
+value="hot"
+<?= $menu['temperature_type']=='hot' ? 'selected' : '' ?>>
+HOT
 </option>
 
 </select>

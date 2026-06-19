@@ -68,14 +68,31 @@
 }
 
 .store-list {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 14px;
+
+    height: 600px;
+    overflow-y: auto;
+}
+
+.store-list::-webkit-scrollbar {
+    width: 10px;
+}
+
+.store-list::-webkit-scrollbar-thumb {
+    background: #111;
+}
+
+.store-list::-webkit-scrollbar-track {
+    background: #ddd;
 }
 
 .store-card {
     padding: 18px;
     border: 3px solid #111;
     background: #fff;
+    flex-shrink: 0;
 }
 
 .store-card h2 {
@@ -114,4 +131,83 @@
     width: 100%;
     height: 100%;
     border-radius: 12px;
+}
+
+.store-card {
+    cursor: pointer;
+}
+
+.direction-btn {
+
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 10px 16px;
+
+    background: #111;
+
+    color: #ffd400;
+
+    text-decoration: none;
+
+    font-weight: 900;
+
+    border: 2px solid #111;
+
+}
+
+.direction-btn:hover {
+
+    background: #ffd400;
+
+    color: #111;
+
+}
+
+.nearest-card {
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    border: 3px solid #111;
+
+    background: #fff;
+
+}
+
+.nearest-card h3 {
+
+    margin-top: 0;
+
+}
+
+.nearest-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+}
+
+.nearest-actions button,
+.nearest-direction-btn {
+
+    padding: 10px 16px;
+
+    border: 2px solid #111;
+
+    background: #111;
+
+    color: #ffd400;
+
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
 }

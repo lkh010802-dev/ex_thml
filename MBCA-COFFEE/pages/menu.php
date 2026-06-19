@@ -38,7 +38,17 @@ while ($row = mysqli_fetch_assoc($result)) {
 </head>
 <body>
   <?php include __DIR__ . '/../includes/header.php'; ?>
+<section class="menu-banner">
 
+    <div>
+        <p>MBCA MENU</p>
+        <h1>음료</h1>
+        <span>
+            학생들의 하루를 채워주는 한 잔
+        </span>
+    </div>
+
+</section>
   <main class="menu-page">
     <section class="menu-hero">
       <p>MBCA MENU</p>
@@ -69,10 +79,16 @@ while ($row = mysqli_fetch_assoc($result)) {
           <?php endif; ?>
 
           <?php if($menu['is_season']): ?>
-              <span class="season-badge">
-                  SEASON
-              </span>
-          <?php endif; ?>
+    <span class="season-badge">
+        SEASON
+    </span>
+<?php endif; ?>
+
+<?php if(!empty($menu['temperature_type'])): ?>
+    <span class="temp-badge <?= $menu['temperature_type'] ?>">
+        <?= strtoupper($menu['temperature_type']) ?>
+    </span>
+<?php endif; ?>
           <h2><?= $menu['name'] ?></h2>
           <p><?= number_format($menu['price']) ?>원</p>
         </article>
@@ -93,5 +109,6 @@ while ($row = mysqli_fetch_assoc($result)) {
 
   <script src="/coffee/assets/js/nav.js"></script>
   <script src="/coffee/assets/js/menu-modal.js"></script>
+  <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

@@ -350,5 +350,6 @@ href="?type=<?= $boardType ?>&keyword=<?= urlencode($keyword) ?>&page=<?= $i ?>"
   </main>
 
   <script src="/coffee/assets/js/nav.js"></script>
+  <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

@@ -95,5 +95,6 @@ function e($value) {
 
   <script src="/coffee/assets/js/nav.js"></script>
   <script src="/coffee/assets/js/event.js"></script>
+  <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

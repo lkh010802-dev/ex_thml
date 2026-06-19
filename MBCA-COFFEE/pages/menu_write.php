@@ -51,31 +51,39 @@ $is_season =
         $imagePath =
             '/coffee/assets/images/menu/' . $fileName;
     }
+$temperature_type =
+    $_POST['temperature_type'] ?? null;
 
-    $sql = "
-    INSERT INTO menus
-    (
-        name,
-        category,
-        price,
-        description,
-        nutrition,
-        image,
-        is_best,
-        is_season
-    )
-    VALUES
-    (
-        '$name',
-        '$category',
-        '$price',
-        '$description',
-        '$nutrition',
-        '$imagePath',
-        '$is_best',
-        '$is_season'
-    )
-    ";
+$temperatureValue =
+    $temperature_type
+    ? "'$temperature_type'"
+    : "NULL";
+$sql = "
+INSERT INTO menus
+(
+    name,
+    category,
+    price,
+    description,
+    nutrition,
+    image,
+    is_best,
+    is_season,
+    temperature_type
+)
+VALUES
+(
+    '$name',
+    '$category',
+    '$price',
+    '$description',
+    '$nutrition',
+    '$imagePath',
+    '$is_best',
+    '$is_season',
+    $temperatureValue
+)
+";
 
     mysqli_query($db, $sql);
 
@@ -117,8 +125,17 @@ $is_season =
 <option value="food">푸드</option>
 
 <option value="goods">상품</option>
-
 </select>
+</p>
+<p id="temp-wrap">
+온도 타입<br>
+
+<select name="temperature_type">
+    <option value="">선택 안함</option>
+    <option value="ice">ICE</option>
+    <option value="hot">HOT</option>
+</select>
+
 </p>
 
 <p>

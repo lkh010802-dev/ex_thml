@@ -89,5 +89,6 @@ if (
   </main>
 
   <script src="/coffee/assets/js/nav.js"></script>
+  <?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

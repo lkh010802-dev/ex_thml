@@ -114,6 +114,7 @@ $user = mysqli_fetch_assoc($result);
 </section>
 
 </main>
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 
 </body>
 </html>

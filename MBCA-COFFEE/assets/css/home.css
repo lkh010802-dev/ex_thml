@@ -546,6 +546,9 @@ body {
     padding: 110px 24px 48px;
     background: #ffd400;
     color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .weather-inner {
@@ -584,7 +587,8 @@ body {
 
 .weather-card {
     min-height: 520px;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     align-content: space-between;
     padding: 28px;
     border: 4px solid #111;
@@ -622,4 +626,19 @@ body {
     .weather-card {
         min-height: 360px;
     }
+}
+
+.weather-button {
+    display: inline-block;
+    margin-top: 24px;
+
+    padding: 14px 22px;
+
+    background: #111;
+    color: #ffd400;
+
+    font-weight: 900;
+    text-decoration: none;
+
+    border-radius: 8px;
 }

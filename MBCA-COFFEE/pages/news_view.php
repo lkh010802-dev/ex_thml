@@ -38,6 +38,58 @@ $post = mysqli_fetch_assoc($result);
 if (!$post) {
     die('게시글이 존재하지 않습니다.');
 }
+if($type === 'notice'){
+
+    $prevResult = mysqli_query(
+        $db,
+        "
+        SELECT id, title
+        FROM notices
+        WHERE id < $id
+        ORDER BY id DESC
+        LIMIT 1
+        "
+    );
+
+    $nextResult = mysqli_query(
+        $db,
+        "
+        SELECT id, title
+        FROM notices
+        WHERE id > $id
+        ORDER BY id ASC
+        LIMIT 1
+        "
+    );
+
+}else{
+
+    $prevResult = mysqli_query(
+        $db,
+        "
+        SELECT id, title
+        FROM qna
+        WHERE id < $id
+        ORDER BY id DESC
+        LIMIT 1
+        "
+    );
+
+    $nextResult = mysqli_query(
+        $db,
+        "
+        SELECT id, title
+        FROM qna
+        WHERE id > $id
+        ORDER BY id ASC
+        LIMIT 1
+        "
+    );
+
+}
+
+$prevPost = mysqli_fetch_assoc($prevResult);
+$nextPost = mysqli_fetch_assoc($nextResult);
 if (
     $type === 'qna' &&
     isset($_SESSION['role']) &&
@@ -234,6 +286,43 @@ if ($type === 'qna') {
 <a href="/coffee/pages/news.php?type=<?= $type ?>">
 목록으로
 </a>
+<hr>
+
+<div class="post-navigation">
+
+    <?php if($prevPost): ?>
+
+        <div>
+
+            <strong>◀ 이전글</strong>
+
+            <a
+            href="/coffee/pages/news_view.php?id=<?= $prevPost['id'] ?>&type=<?= $type ?>"
+            >
+                <?= htmlspecialchars($prevPost['title']) ?>
+            </a>
+
+        </div>
+
+    <?php endif; ?>
+
+    <?php if($nextPost): ?>
+
+        <div>
+
+            <strong>▶ 다음글</strong>
+
+            <a
+            href="/coffee/pages/news_view.php?id=<?= $nextPost['id'] ?>&type=<?= $type ?>"
+            >
+                <?= htmlspecialchars($nextPost['title']) ?>
+            </a>
+
+        </div>
+
+    <?php endif; ?>
+
+</div>
 <?php if(
     isset($_SESSION['role']) &&
     $_SESSION['role'] === 'admin' &&
@@ -296,6 +385,7 @@ onclick="return confirm('삭제하시겠습니까?');"
 </main>
 
 <script src="/coffee/assets/js/nav.js"></script>
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 
 </body>
 </html>

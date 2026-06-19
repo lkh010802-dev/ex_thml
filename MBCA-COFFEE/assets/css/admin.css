@@ -1,6 +1,13 @@
 body {
     margin: 0;
     font-family: sans-serif;
+    padding: 20px;
+}
+
+.admin-container {
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
 }
 
 .admin-nav {
@@ -75,6 +82,7 @@ body {
 .dashboard-box table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .dashboard-box th,

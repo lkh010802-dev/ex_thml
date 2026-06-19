@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = trim($_POST['address']);
     $phone = trim($_POST['phone']);
     $hours = trim($_POST['hours']);
+    $lat = $_POST['lat'];
+    $lng = $_POST['lng'];
 
     mysqli_query(
         $db,
@@ -26,14 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             name,
             address,
             phone,
-            hours
+            hours,
+            lat,
+            lng
         )
         VALUES
         (
             '$name',
             '$address',
             '$phone',
-            '$hours'
+            '$hours',
+            '$lat',
+            '$lng'
         )
         "
     );
@@ -103,6 +109,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     type="text"
     name="hours"
     placeholder="08:00 - 22:00"
+>
+</p>
+<p>
+위도<br>
+<input
+    type="text"
+    name="lat"
+>
+</p>
+
+<p>
+경도<br>
+<input
+    type="text"
+    name="lng"
 >
 </p>
 

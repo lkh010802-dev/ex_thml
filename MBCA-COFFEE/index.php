@@ -1,5 +1,14 @@
 <?php
-
+session_start();
+$weatherRecommend = [
+  'location' => '위치 확인중...',
+  'temperature' => '--°C',
+  'condition' => '날씨 확인중...',
+  'summary' => '현재 날씨를 불러오는 중입니다.',
+  'menuName' => '추천 음료',
+  'description' => '잠시만 기다려주세요.',
+  'image' => '/coffee/assets/images/cat.png'
+];
 require_once __DIR__ . '/config/database.php';
 
 $eventsResult = mysqli_query(
@@ -19,17 +28,6 @@ while($row = mysqli_fetch_assoc($eventsResult)){
     $events[] = $row;
 }
 
-?>
-<?php
-$weatherRecommend = [
-  'location' => 'Seoul',
-  'temperature' => '29°C',
-  'condition' => '맑음',
-  'summary' => '햇살이 강한 오후, 시원한 음료가 잘 어울려요.',
-  'menuName' => '아이스 아메리카노',
-  'description' => '깔끔한 커피의 청량감으로 더운 날씨를 가볍게 넘겨보세요.',
-  'image' => '/coffee/assets/images/cat.png'
-];
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -165,48 +163,159 @@ $weatherRecommend = [
   </div>
 </section>
 
-<section class="snap-section weather-section">
+<section
+    class="snap-section weather-section"
+    id="weather-section"
+>
   <div class="weather-inner">
     <div class="weather-copy">
       <p class="weather-label">TODAY WEATHER PICK</p>
-      <h2>오늘 날씨엔<br><?= $weatherRecommend['menuName'] ?></h2>
-      <p><?= $weatherRecommend['summary'] ?></p>
-      <strong><?= $weatherRecommend['description'] ?></strong>
+      <h2 id="weather-menu">
+          오늘 날씨엔<br>
+          추천 음료
+      </h2>
+      <p id="weather-summary">
+          현재 날씨를 불러오는 중입니다.
+      </p>
+      <strong id="weather-description">
+          잠시만 기다려주세요.
+      </strong>
+      <a
+    id="weather-link"
+    class="weather-button"
+    href="/coffee/pages/menu.php"
+>
+    메뉴 자세히 보기
+</a>
     </div>
 
     <div class="weather-card">
       <div>
-        <span><?= $weatherRecommend['location'] ?></span>
-        <h3><?= $weatherRecommend['temperature'] ?></h3>
-        <p><?= $weatherRecommend['condition'] ?></p>
-      </div>
+
+    <h3 id="weather-temp">
+        <?= $weatherRecommend['temperature'] ?>
+    </h3>
+
+
+</div>
 
       <img
-        src="<?= $weatherRecommend['image'] ?>"
-        alt="<?= $weatherRecommend['menuName'] ?>"
-      >
+    id="weather-image"
+    src="<?= $weatherRecommend['image'] ?>"
+    alt="<?= $weatherRecommend['menuName'] ?>"
+>
     </div>
   </div>
 </section>
+<?php include __DIR__ . '/includes/footer.php'; ?>
 </main>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="/coffee/assets/js/season-menu.js"></script>
   <script src="/coffee/assets/js/lang.js"></script>
   <script src="/coffee/assets/js/nav.js"></script>
+<script>
+navigator.geolocation.getCurrentPosition(
 
-  <?php
-session_start();
-?>
+    function(position){
 
-<?php if(isset($_SESSION['userid'])): ?>
+        const lat =
+            position.coords.latitude;
 
-<p>
-<?= $_SESSION['name'] ?> 님 환영합니다.
-(<?= $_SESSION['role'] ?>)
-</p>
+        const lng =
+            position.coords.longitude;
 
-<?php endif; ?>
+        fetch(
+    `/coffee/api/weather.php?lat=${lat}&lng=${lng}`
+)
 
+.then(function(response){
+
+    return response.json();
+
+})
+
+.then(function(data){
+
+    const temp =
+        Math.round(
+            data.main.temp
+        );
+
+    document.getElementById(
+        'weather-temp'
+    ).innerText =
+        temp + '°C';
+
+    let temperatureType = '';
+
+    if(temp >= 20){
+
+        temperatureType = 'ice';
+
+    }else{
+
+        temperatureType = 'hot';
+
+    }
+
+    fetch(
+        `/coffee/api/recommend_menu.php?type=${temperatureType}`
+    )
+
+    .then(function(response){
+
+        return response.json();
+
+    })
+
+    .then(function(menu){
+
+        document.getElementById(
+            'weather-menu'
+        ).innerHTML =
+            '오늘 날씨엔<br>' +
+            menu.name;
+
+        document.getElementById(
+            'weather-image'
+        ).src =
+            menu.image;
+
+        document.getElementById(
+            'weather-summary'
+        ).innerText =
+            temperatureType === 'ice'
+            ? '시원하게 즐기기 좋은 날씨예요.'
+            : '따뜻한 음료가 어울리는 날씨예요.';
+
+        let shortDesc =
+    menu.description.substring(0, 60);
+
+document.getElementById(
+    'weather-description'
+).innerText =
+    shortDesc + '...';
+
+    });
+
+});
+
+    },
+        function(error){
+
+        console.log(error);
+
+        document.getElementById(
+            'weather-location'
+        ).innerText =
+            '위치 확인 실패';
+
+    }
+
+);
+
+
+</script>
 </body>
 </html>
