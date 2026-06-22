@@ -5,6 +5,7 @@
       <a href="/coffee/pages/menu.php?category=drink">음료</a>
       <a href="/coffee/pages/menu.php?category=food">푸드</a>
       <a href="/coffee/pages/menu.php?category=goods">상품</a>
+      <a class="<?= $category === 'coffee' ? 'is-active' : '' ?>"href="/coffee/pages/menu.php?category=coffee">커피</a>
     </section>
 
     <section>

@@ -1,109 +1,9 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../includes/auth.php';
+require_admin();
+$uploadError = pull_flash('upload_error', '');
 
-if (
-    !isset($_SESSION['role'])
-    || $_SESSION['role'] !== 'admin'
-) {
-    die('관리자만 접근 가능합니다.');
-}
-
-require_once __DIR__ . '/../config/database.php';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $badge = trim($_POST['badge']);
-    $title = trim($_POST['title']);
-    $description = trim($_POST['description']);
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
-
-    $period =
-        $start_date .
-        ' ~ ' .
-        $end_date;
-
-    $thumbnailPath = '';
-    $imagePath = '';
-
-    if (
-    isset($_FILES['thumbnail'])
-    && $_FILES['thumbnail']['error'] === 0
-) {
-
-    $fileName =
-        'thumb_' .
-        time() .
-        '_' .
-        basename($_FILES['thumbnail']['name']);
-
-    $uploadDir =
-        $_SERVER['DOCUMENT_ROOT']
-        . '/coffee/assets/images/event/';
-
-    move_uploaded_file(
-        $_FILES['thumbnail']['tmp_name'],
-        $uploadDir . $fileName
-    );
-
-    $thumbnailPath =
-        '/coffee/assets/images/event/' . $fileName;
-}
-
-    if (
-        isset($_FILES['image'])
-        && $_FILES['image']['error'] === 0
-    ) {
-
-        $fileName =
-            time() . '_' .
-            basename($_FILES['image']['name']);
-
-        $uploadDir =
-            $_SERVER['DOCUMENT_ROOT']
-            . '/coffee/assets/images/event/';
-
-        move_uploaded_file(
-            $_FILES['image']['tmp_name'],
-            $uploadDir . $fileName
-        );
-
-        $imagePath =
-            '/coffee/assets/images/event/' . $fileName;
-    }
-
-    mysqli_query(
-        $db,
-        "
-        INSERT INTO events
-        (
-            badge,
-            title,
-            description,
-            period,
-            thumbnail,
-            start_date,
-            end_date,
-            image
-        )
-        VALUES
-        (
-            '$badge',
-            '$title',
-            '$description',
-            '$period',
-            '$thumbnailPath',
-            '$start_date',
-            '$end_date',
-            '$imagePath'
-        )
-        "
-    );
-
-    header('Location: admin_events.php');
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
@@ -115,116 +15,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<p>
-<a href="/coffee/pages/admin_events.php">
-← 이벤트 관리
-</a>
-</p>
+<?php include __DIR__ . '/../includes/admin_nav.php'; ?>
 
-<h1>이벤트 등록</h1>
+<main class="write-page">
 
-<form method="post" enctype="multipart/form-data">
+    <section class="write-wrap">
 
-<p>
-뱃지<br>
-<input type="text" name="badge" required>
-</p>
+        <p>
+            <a href="/coffee/pages/admin_events.php" class="back-link">
+                ← 이벤트 관리로 돌아가기
+            </a>
+        </p>
 
-<p>
-제목<br>
-<input type="text" name="title" required>
-</p>
+        <h1>이벤트 등록</h1>
 
-<p>
-설명<br>
-<textarea name="description"></textarea>
-</p>
+        <?php if ($uploadError): ?>
+            <p class="form-message error">
+                <?= e($uploadError) ?>
+            </p>
+        <?php endif; ?>
 
-<p>
-시작일<br>
-<input
-    type="date"
-    name="start_date"
-    required
->
-</p>
+        <form
+            method="post"
+            action="/coffee/actions/event_create.php"
+            enctype="multipart/form-data"
+        >
+            <?= csrf_field() ?>
 
-<p>
-종료일<br>
-<input
-    type="date"
-    name="end_date"
-    required
-    
->
-</p>
+            <div class="form-row">
+                <label>뱃지</label>
+                <input
+                    type="text"
+                    name="badge"
+                    placeholder="예: 진행중, NEW, 할인"
+                    required
+                >
+            </div>
 
-<p>
-썸네일 이미지<br>
-<input
-    type="file"
-    name="thumbnail"
-    accept="image/*"
-    required
->
-</p>
+            <div class="form-row">
+                <label>제목</label>
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="이벤트 제목을 입력하세요."
+                    required
+                >
+            </div>
 
-<p>
-상세 이미지<br>
-<input
-    type="file"
-    name="image"
-    accept="image/*"
-    required
->
-</p>
+            <div class="form-row">
+                <label>설명</label>
+                <textarea
+                    name="description"
+                    rows="6"
+                    placeholder="이벤트 설명을 입력하세요."
+                ></textarea>
+            </div>
 
-<img
-    id="preview"
-    src=""
-    style="
-        width:200px;
-        display:none;
-        margin-top:10px;
-    "
->
+            <div class="form-grid-2">
+                <div class="form-row">
+                    <label>시작일</label>
+                    <input
+                        type="date"
+                        name="start_date"
+                        required
+                    >
+                </div>
 
-<br><br>
+                <div class="form-row">
+                    <label>종료일</label>
+                    <input
+                        type="date"
+                        name="end_date"
+                        required
+                    >
+                </div>
+            </div>
 
-<button type="submit">
-등록하기
-</button>
+            <div class="form-row">
+                <label>썸네일 이미지</label>
+                <input
+                    type="file"
+                    name="thumbnail"
+                    accept="image/*"
+                    required
+                >
+            </div>
 
-</form>
+            <div class="form-row">
+                <label>상세 이미지</label>
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    required
+                >
+            </div>
 
-<script>
+            <img
+                id="preview"
+                src=""
+                class="upload-preview upload-preview-spaced"
+                alt="이벤트 이미지 미리보기"
+            >
 
-const imageInput =
-    document.querySelector('input[name="image"]');
+            <div class="form-buttons">
+                <a
+                    href="/coffee/pages/admin_events.php"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
 
-const preview =
-    document.getElementById('preview');
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    이벤트 등록 →
+                </button>
+            </div>
 
-imageInput.addEventListener('change', function(){
+        </form>
 
-    const file = this.files[0];
+    </section>
 
-    if(!file) return;
+</main>
 
-    const reader = new FileReader();
-
-    reader.onload = function(e){
-
-        preview.src = e.target.result;
-        preview.style.display = 'block';
-
-    };
-
-    reader.readAsDataURL(file);
-
-});
-
-</script>
+<script src="/coffee/assets/js/image-preview.js"></script>
 
 </body>
 </html>

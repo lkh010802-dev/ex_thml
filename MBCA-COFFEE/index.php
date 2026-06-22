@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/auth.php';
+ensure_session_started();
 $weatherRecommend = [
   'location' => '위치 확인중...',
   'temperature' => '--°C',
@@ -137,30 +138,71 @@ while($row = mysqli_fetch_assoc($eventsResult)){
 </section>
 
 <section class="snap-section event-section">
+
   <div class="event-inner">
+
     <div class="event-head">
       <p>MBCA EVENT</p>
       <h2>지금 진행 중인 혜택</h2>
-      <a href="/coffee/pages/event.php">전체 이벤트 보기</a>
+      <a href="/coffee/pages/event.php">
+          전체 이벤트 보기
+      </a>
     </div>
 
     <div class="event-grid">
+
       <?php foreach ($events as $index => $event): ?>
         <article class="event-card <?= $index === 0 ? 'event-card-main' : '' ?>">
           <a href="/coffee/pages/event_view.php?id=<?= $event['id'] ?>">
-              <img src="<?= $event['thumbnail'] ?>" alt="<?= $event['title'] ?>">
-              <div class="event-info">
-                  <span><?= $event['badge'] ?></span>
-                  <h3><?= $event['title'] ?></h3>
-                  <p><?= $event['description'] ?></p>
-                  <small><?= $event['period'] ?></small>
-              </div>
+
+            <img src="<?= e(image_url($event['thumbnail'], 'event')) ?>" alt="<?= e($event['title']) ?>">
+
+            <div class="event-info">
+              <span><?= $event['badge'] ?></span>
+
+              <h3><?= $event['title'] ?></h3>
+
+              <p><?= $event['description'] ?></p>
+
+              <small><?= $event['period'] ?></small>
+            </div>
+
           </a>
-          </article>
         </article>
       <?php endforeach; ?>
+
     </div>
+
+    <div class="event-benefits">
+
+      <div class="event-benefit">
+        <img src="/coffee/assets/images/event/event-gift.png" alt="다양한 혜택">
+        <h3>다양한 혜택</h3>
+        <p>매월 새로운 이벤트</p>
+      </div>
+
+      <div class="event-benefit">
+        <img src="/coffee/assets/images/event/event-point.png" alt="포인트 적립">
+        <h3>포인트 적립</h3>
+        <p>결제할수록 쌓이는 혜택</p>
+      </div>
+
+      <div class="event-benefit">
+        <img src="/coffee/assets/images/event/event-touch.png" alt="간편한 참여">
+        <h3>간편한 참여</h3>
+        <p>누구나 쉽게 참여 가능</p>
+      </div>
+
+      <div class="event-benefit">
+        <img src="/coffee/assets/images/event/event-calendar.png" alt="기간 한정">
+        <h3>기간 한정</h3>
+        <p>놓치기 전에 확인하세요</p>
+      </div>
+
+    </div>
+
   </div>
+
 </section>
 
 <section
@@ -201,8 +243,8 @@ while($row = mysqli_fetch_assoc($eventsResult)){
 
       <img
     id="weather-image"
-    src="<?= $weatherRecommend['image'] ?>"
-    alt="<?= $weatherRecommend['menuName'] ?>"
+    src="<?= e(image_url($weatherRecommend['image'], 'menu')) ?>"
+    alt="<?= e($weatherRecommend['menuName']) ?>"
 >
     </div>
   </div>
@@ -214,108 +256,6 @@ while($row = mysqli_fetch_assoc($eventsResult)){
   <script src="/coffee/assets/js/season-menu.js"></script>
   <script src="/coffee/assets/js/lang.js"></script>
   <script src="/coffee/assets/js/nav.js"></script>
-<script>
-navigator.geolocation.getCurrentPosition(
-
-    function(position){
-
-        const lat =
-            position.coords.latitude;
-
-        const lng =
-            position.coords.longitude;
-
-        fetch(
-    `/coffee/api/weather.php?lat=${lat}&lng=${lng}`
-)
-
-.then(function(response){
-
-    return response.json();
-
-})
-
-.then(function(data){
-
-    const temp =
-        Math.round(
-            data.main.temp
-        );
-
-    document.getElementById(
-        'weather-temp'
-    ).innerText =
-        temp + '°C';
-
-    let temperatureType = '';
-
-    if(temp >= 20){
-
-        temperatureType = 'ice';
-
-    }else{
-
-        temperatureType = 'hot';
-
-    }
-
-    fetch(
-        `/coffee/api/recommend_menu.php?type=${temperatureType}`
-    )
-
-    .then(function(response){
-
-        return response.json();
-
-    })
-
-    .then(function(menu){
-
-        document.getElementById(
-            'weather-menu'
-        ).innerHTML =
-            '오늘 날씨엔<br>' +
-            menu.name;
-
-        document.getElementById(
-            'weather-image'
-        ).src =
-            menu.image;
-
-        document.getElementById(
-            'weather-summary'
-        ).innerText =
-            temperatureType === 'ice'
-            ? '시원하게 즐기기 좋은 날씨예요.'
-            : '따뜻한 음료가 어울리는 날씨예요.';
-
-        let shortDesc =
-    menu.description.substring(0, 60);
-
-document.getElementById(
-    'weather-description'
-).innerText =
-    shortDesc + '...';
-
-    });
-
-});
-
-    },
-        function(error){
-
-        console.log(error);
-
-        document.getElementById(
-            'weather-location'
-        ).innerText =
-            '위치 확인 실패';
-
-    }
-
-);
-
-
-</script>
+  <script src="/coffee/assets/js/weather.js"></script>
 </body>
 </html>

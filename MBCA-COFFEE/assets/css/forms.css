@@ -112,3 +112,91 @@
     width: 18px;
     height: 18px;
 }
+
+.form-page {
+    min-height: 100vh;
+
+    padding: 140px 20px 80px;
+
+    background: #ffd400;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 500px;
+
+    background: #fff;
+
+    padding: 40px;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, .08);
+}
+
+.form-card h1 {
+    margin-top: 0;
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    font-size: 40px;
+}
+
+.form-card label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: 900;
+}
+
+.form-card input {
+    width: 100%;
+
+    padding: 14px;
+
+    border: 2px solid #ddd;
+
+    border-radius: 12px;
+
+    margin-bottom: 20px;
+
+    box-sizing: border-box;
+}
+
+.form-card button {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #111;
+
+    color: #ffd400;
+
+    font-size: 16px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.form-links {
+    margin-top: 20px;
+
+    text-align: center;
+}
+
+.form-links a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 700;
+}

@@ -1,34 +1,8 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../includes/auth.php';
+require_login();
 
-include __DIR__ . '/../config/database.php';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!isset($_SESSION['userid'])) {
-        die('로그인이 필요합니다.');
-    }
-
-    $userid = $_SESSION['userid'];
-
-    $title = trim($_POST['title']);
-    $content = trim($_POST['content']);
-
-    $sql = "INSERT INTO qna
-            (userid, title, content)
-            VALUES
-            ('$userid', '$title', '$content')";
-
-    $result = mysqli_query($db, $sql);
-
-    if (!$result) {
-        die(mysqli_error($db));
-    }
-
-    header('Location: /coffee/pages/news.php?type=qna');
-    exit;
-}
 
 ?>
 <!DOCTYPE html>
@@ -41,40 +15,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link rel="stylesheet" href="/coffee/assets/css/header.css">
     <link rel="stylesheet" href="/coffee/assets/css/nav.css">
-    <link rel="stylesheet" href="/coffee/assets/css/forms.css">
+    <link rel="stylesheet" href="/coffee/assets/css/notice.css">
 </head>
 
 <body>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
-<main class="auth-page">
+<main class="write-page">
 
-    <section class="auth-card">
+    <section class="write-wrap">
 
         <h1>문의 등록</h1>
 
-        <form method="post">
+        <form
+            method="post"
+            action="/coffee/actions/qna_create.php"
+        >
 
-            <label>문의 제목</label>
+            <?= csrf_field() ?>
 
-            <input
-                type="text"
-                name="title"
-                required
-            >
+            <div class="form-row">
 
-            <label>문의 내용</label>
+                <label>문의 제목</label>
 
-            <textarea
-                name="content"
-                rows="10"
-                required
-            ></textarea>
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="문의 제목을 입력하세요."
+                    required
+                >
 
-            <button type="submit">
-                문의 등록
-            </button>
+            </div>
+
+            <div class="form-row">
+
+                <label>문의 내용</label>
+
+                <textarea
+                    name="content"
+                    rows="10"
+                    placeholder="문의 내용을 입력하세요."
+                    required
+                ></textarea>
+
+            </div>
+
+            <div class="form-buttons">
+
+                <a
+                    href="/coffee/pages/news.php?type=qna"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    문의 등록 →
+                </button>
+
+            </div>
 
         </form>
 

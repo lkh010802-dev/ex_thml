@@ -1,386 +1,210 @@
 <?php
-
-session_start();
+require_once __DIR__ . '/../includes/auth.php';
+ensure_session_started();
 
 include __DIR__ . '/../config/database.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $type = $_GET['type'] ?? 'notice';
 
+if (!in_array($type, ['notice', 'qna'], true)) {
+    $type = 'notice';
+}
+
 if (!$id) {
     die('잘못된 접근입니다.');
 }
 
-if ($type === 'notice') {
+$table = $type === 'notice' ? 'notices' : 'qna';
+$stmt = mysqli_prepare($db, "UPDATE $table SET views = views + 1 WHERE id = ?");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
 
-    mysqli_query(
-        $db,
-        "UPDATE notices
-         SET views = views + 1
-         WHERE id = $id"
-    );
-
-    $sql = "SELECT *
-            FROM notices
-            WHERE id = $id";
-
-} else {
-
-    $sql = "SELECT *
-            FROM qna
-            WHERE id = $id";
-}
-
-$result = mysqli_query($db, $sql);
-
-$post = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($db, "SELECT * FROM $table WHERE id = ?");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$post = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if (!$post) {
     die('게시글이 존재하지 않습니다.');
 }
-if($type === 'notice'){
 
-    $prevResult = mysqli_query(
-        $db,
-        "
-        SELECT id, title
-        FROM notices
-        WHERE id < $id
-        ORDER BY id DESC
-        LIMIT 1
-        "
-    );
+$stmt = mysqli_prepare($db, "SELECT id, title FROM $table WHERE id < ? ORDER BY id DESC LIMIT 1");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$prevResult = mysqli_stmt_get_result($stmt);
 
-    $nextResult = mysqli_query(
-        $db,
-        "
-        SELECT id, title
-        FROM notices
-        WHERE id > $id
-        ORDER BY id ASC
-        LIMIT 1
-        "
-    );
-
-}else{
-
-    $prevResult = mysqli_query(
-        $db,
-        "
-        SELECT id, title
-        FROM qna
-        WHERE id < $id
-        ORDER BY id DESC
-        LIMIT 1
-        "
-    );
-
-    $nextResult = mysqli_query(
-        $db,
-        "
-        SELECT id, title
-        FROM qna
-        WHERE id > $id
-        ORDER BY id ASC
-        LIMIT 1
-        "
-    );
-
-}
+$stmt = mysqli_prepare($db, "SELECT id, title FROM $table WHERE id > ? ORDER BY id ASC LIMIT 1");
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$nextResult = mysqli_stmt_get_result($stmt);
 
 $prevPost = mysqli_fetch_assoc($prevResult);
 $nextPost = mysqli_fetch_assoc($nextResult);
-if (
-    $type === 'qna' &&
-    isset($_SESSION['role']) &&
-    $_SESSION['role'] === 'admin' &&
-    $_SERVER['REQUEST_METHOD'] === 'POST'
-) {
 
-    $reply = trim($_POST['reply']);
+$reply = null;
 
-    $adminId = $_SESSION['userid'];
+if ($type === 'qna') {
+    $stmt = mysqli_prepare($db, 'SELECT * FROM qna_reply WHERE qna_id = ? ORDER BY id DESC LIMIT 1');
+    mysqli_stmt_bind_param($stmt, 'i', $id);
+    mysqli_stmt_execute($stmt);
+    $replyResult = mysqli_stmt_get_result($stmt);
 
-    mysqli_query(
-        $db,
-        "INSERT INTO qna_reply
-        (qna_id, admin_id, content)
-        VALUES
-        ($id, '$adminId', '$reply')"
-    );
-
-    mysqli_query(
-        $db,
-        "UPDATE qna
-         SET status='answered'
-         WHERE id=$id"
-    );
-
-    header(
-        "Location: news_view.php?id=$id&type=qna"
-    );
-    exit;
+    $reply = mysqli_fetch_assoc($replyResult);
 }
 ?>
-
-
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= e($post['title']) ?> | MBCA COFFEE</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title><?= htmlspecialchars($post['title']) ?></title>
-
-<link rel="stylesheet" href="/coffee/assets/css/header.css">
-<link rel="stylesheet" href="/coffee/assets/css/nav.css">
-<link rel="stylesheet" href="/coffee/assets/css/notice.css">
-
+    <link rel="stylesheet" href="/coffee/assets/css/header.css">
+    <link rel="stylesheet" href="/coffee/assets/css/nav.css">
+    <link rel="stylesheet" href="/coffee/assets/css/notice.css">
 </head>
-
 <body>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
-<main class="notice-page">
+<main class="post-page">
 
-<section class="board-title-bar">
-    <h1>
-        <?= $type === 'notice'
-            ? '공지사항'
-            : 'Q&A' ?>
-    </h1>
-</section>
+    <section class="post-wrap">
 
-<section class="board-wrap">
+        <p class="post-kicker">
+            <?= $type === 'notice' ? 'MBCA NOTICE' : 'MBCA Q&A' ?>
+        </p>
 
-<div class="view-card">
+        <h1 class="post-title">
+            <?= e($post['title']) ?>
+        </h1>
 
-```
-<h2>
-    <?= htmlspecialchars($post['title']) ?>
-</h2>
-
-<div class="view-meta">
-
-    <?php if($type === 'notice'): ?>
-
-    <span>
-        조회수 :
-        <?= $post['views'] ?>
-    </span>
-
-    <?php endif; ?>
-
-    <span>
-        작성일 :
-        <?= $post['created_at'] ?>
-    </span>
-
-</div>
-
-
-<hr>
-
-<div class="view-content">
-
-    <?= nl2br(htmlspecialchars($post['content'])) ?>
-
-</div>
-```
-
-</div>
-<?php if(
-    $type === 'qna' &&
-    isset($_SESSION['role']) &&
-    $_SESSION['role'] === 'admin'
-): ?>
-
-<hr>
-
-<div class="reply-write-box">
-
-    <h3>관리자 답변 작성</h3>
-
-    <form method="post">
-
-        <textarea
-            name="reply"
-            rows="6"
-            required
-        ></textarea>
-
-        <button type="submit">
-            답변 등록
-        </button>
-
-    </form>
-
-</div>
-
-<?php endif; ?>
-<?php if(
-    $type === 'notice' &&
-    isset($_SESSION['role']) &&
-    $_SESSION['role'] === 'admin'
-): ?>
-
-<a href="/coffee/pages/notice_edit.php?id=<?= $post['id'] ?>">
-수정
-</a>
-
-<a
-href="/coffee/pages/notice_delete.php?id=<?= $post['id'] ?>"
-onclick="return confirm('삭제하시겠습니까?')"
->
-삭제
-</a>
-
-<?php endif; ?>
-
-<?php
-
-if ($type === 'qna') {
-
-    $replySql = "SELECT *
-                 FROM qna_reply
-                 WHERE qna_id = $id
-                 ORDER BY id DESC
-                 LIMIT 1";
-
-    $replyResult = mysqli_query($db, $replySql);
-
-    $reply = mysqli_fetch_assoc($replyResult);
-      mysqli_query(
-        $db,
-        "UPDATE qna
-         SET views = views + 1
-         WHERE id = $id"
-    );
-
-    if ($reply):
-
-?>
-
-<hr>
-
-<div class="reply-box">
-
-```
-<h3>관리자 답변</h3>
-
-<p>
-    <?= nl2br(htmlspecialchars($reply['content'])) ?>
-</p>
-```
-
-</div>
-
-<?php
-    endif;
-}
-?>
-
-<a href="/coffee/pages/news.php?type=<?= $type ?>">
-목록으로
-</a>
-<hr>
-
-<div class="post-navigation">
-
-    <?php if($prevPost): ?>
-
-        <div>
-
-            <strong>◀ 이전글</strong>
-
-            <a
-            href="/coffee/pages/news_view.php?id=<?= $prevPost['id'] ?>&type=<?= $type ?>"
-            >
-                <?= htmlspecialchars($prevPost['title']) ?>
-            </a>
-
+        <div class="post-meta">
+            <span>조회수 <?= e($post['views'] ?? 0) ?></span>
+            <span>작성일 <?= e($post['created_at']) ?></span>
         </div>
 
-    <?php endif; ?>
-
-    <?php if($nextPost): ?>
-
-        <div>
-
-            <strong>▶ 다음글</strong>
-
-            <a
-            href="/coffee/pages/news_view.php?id=<?= $nextPost['id'] ?>&type=<?= $type ?>"
-            >
-                <?= htmlspecialchars($nextPost['title']) ?>
-            </a>
-
+        <div class="post-content">
+            <?= nl2br(e($post['content'])) ?>
         </div>
 
-    <?php endif; ?>
+        <?php if($type === 'qna' && $reply): ?>
+            <div class="reply-box">
+                <h3>관리자 답변</h3>
+                <p><?= nl2br(e($reply['content'])) ?></p>
+            </div>
+        <?php endif; ?>
 
-</div>
-<?php if(
-    isset($_SESSION['role']) &&
-    $_SESSION['role'] === 'admin' &&
-    $type === 'notice'
-): ?>
-
-<a href="/coffee/pages/notice_edit.php?id=<?= $id ?>">
-수정
-</a>
-
-<a
-href="/coffee/pages/notice_delete.php?id=<?= $id ?>"
-onclick="return confirm('삭제하시겠습니까?');"
->
-삭제
-</a>
-
-<?php endif; ?>
-</section>
-<?php if(
-    $type === 'qna'
-    &&
-    isset($_SESSION['userid'])
-    &&
-    $_SESSION['userid'] === $post['userid']
-): ?>
-
-<a href="/coffee/pages/qna_edit.php?id=<?= $id ?>">
-수정
-</a>
-
-<?php endif; ?>
-
-
-<?php if(
-    $type === 'qna'
-    &&
-    isset($_SESSION['userid'])
-    &&
-    (
-        $_SESSION['userid'] === $post['userid']
-        ||
-        (
-            isset($_SESSION['role'])
-            &&
+        <?php if(
+            $type === 'qna' &&
+            isset($_SESSION['role']) &&
             $_SESSION['role'] === 'admin'
+        ): ?>
+            <div class="reply-write-box">
+                <h3>관리자 답변 작성</h3>
+
+                <form method="post" action="/coffee/actions/qna_reply.php">
+<?= csrf_field() ?>
+                    <input type="hidden" name="qna_id" value="<?= $id ?>">
+                    <textarea
+                        name="reply"
+                        rows="6"
+                        required
+                        placeholder="답변 내용을 입력하세요."
+                    ></textarea>
+
+                    <button type="submit">
+                        답변 등록
+                    </button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <div class="post-navigation">
+            <?php if($prevPost): ?>
+                <a href="/coffee/pages/news_view.php?id=<?= $prevPost['id'] ?>&type=<?= $type ?>">
+                    <strong>이전글</strong>
+                    <span><?= e($prevPost['title']) ?></span>
+                </a>
+            <?php endif; ?>
+
+            <?php if($nextPost): ?>
+                <a href="/coffee/pages/news_view.php?id=<?= $nextPost['id'] ?>&type=<?= $type ?>">
+                    <strong>다음글</strong>
+                    <span><?= e($nextPost['title']) ?></span>
+                </a>
+            <?php endif; ?>
+        </div>
+<div class="post-actions">
+    <a href="/coffee/pages/news.php?type=<?= $type ?>">
+        목록으로
+    </a>
+
+    <?php if(
+        $type === 'notice' &&
+        isset($_SESSION['role']) &&
+        $_SESSION['role'] === 'admin'
+    ): ?>
+        <a href="/coffee/pages/notice_edit.php?id=<?= $id ?>">
+            수정
+        </a>
+
+        <form
+            class="inline-delete-form"
+            method="post"
+            action="/coffee/actions/notice_delete.php"
+            onsubmit="return confirm('공지를 삭제하시겠습니까?');"
+        >
+            <?= csrf_field() ?>
+            <input type="hidden" name="id" value="<?= $id ?>">
+
+            <button class="delete-btn" type="submit">
+                삭제
+            </button>
+        </form>
+    <?php endif; ?>
+
+    <?php if(
+        $type === 'qna' &&
+        isset($_SESSION['userid']) &&
+        $_SESSION['userid'] === ($post['userid'] ?? '')
+    ): ?>
+        <a href="/coffee/pages/qna_edit.php?id=<?= $id ?>">
+            수정
+        </a>
+    <?php endif; ?>
+
+    <?php if(
+        $type === 'qna' &&
+        isset($_SESSION['userid']) &&
+        (
+            $_SESSION['userid'] === ($post['userid'] ?? '') ||
+            (
+                isset($_SESSION['role']) &&
+                $_SESSION['role'] === 'admin'
+            )
         )
-    )
-): ?>
+    ): ?>
+        <form
+            class="inline-delete-form"
+            method="post"
+            action="/coffee/actions/qna_delete.php"
+            onsubmit="return confirm('문의를 삭제하시겠습니까?');"
+        >
+            <?= csrf_field() ?>
+            <input type="hidden" name="id" value="<?= $id ?>">
 
-<a
-href="/coffee/pages/qna_delete.php?id=<?= $id ?>"
-onclick="return confirm('삭제하시겠습니까?');"
->
-문의 삭제
-</a>
+            <button class="delete-btn" type="submit">
+                문의 삭제
+            </button>
+        </form>
+    <?php endif; ?>
+</div>
+       
+        
 
-<?php endif; ?>
+    </section>
 
 </main>
 

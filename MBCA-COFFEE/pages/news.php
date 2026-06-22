@@ -9,9 +9,13 @@ MBCA COFFEE COMMUNITY PAGE
 <?php
 
 
-session_start();
+require_once __DIR__ . '/../includes/auth.php';
+ensure_session_started();
 
 $boardType = $_GET['type'] ?? 'notice';
+if (!in_array($boardType, ['notice', 'qna'], true)) {
+    $boardType = 'notice';
+}
 $keyword = trim(
     $_GET['keyword'] ?? ''
 );
@@ -30,16 +34,9 @@ $offset =
     * $perPage;
 
 include __DIR__ . '/../config/database.php';
-
-function e($value) {
-    return htmlspecialchars(
-        (string)$value,
-        ENT_QUOTES,
-        'UTF-8'
-    );
-}
+$searchKeyword = '%' . $keyword . '%';
 if ($boardType === 'notice') {
-$result = mysqli_query(
+$stmt = mysqli_prepare(
     $db,
     "SELECT
         id,
@@ -48,12 +45,15 @@ $result = mysqli_query(
         created_at,
         is_pinned
      FROM notices
-     WHERE title LIKE '%$keyword%'
+     WHERE title LIKE ?
 ORDER BY
 is_pinned DESC,
 id DESC
-LIMIT $offset, $perPage"
+LIMIT ?, ?"
 );
+mysqli_stmt_bind_param($stmt, 'sii', $searchKeyword, $offset, $perPage);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
     $rows = [];
 
@@ -73,7 +73,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 elseif ($boardType === 'qna') {
 
-$result = mysqli_query(
+$stmt = mysqli_prepare(
     $db,
     "SELECT
         id,
@@ -83,10 +83,13 @@ $result = mysqli_query(
         views,
         created_at
 FROM qna
-WHERE title LIKE '%$keyword%'
+WHERE title LIKE ?
 ORDER BY id DESC
-LIMIT $offset, $perPage"
+LIMIT ?, ?"
 );
+mysqli_stmt_bind_param($stmt, 'sii', $searchKeyword, $offset, $perPage);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
     $rows = [];
 
@@ -166,21 +169,27 @@ else {
 }
 if ($boardType === 'notice') {
 
-    $countResult = mysqli_query(
+    $stmt = mysqli_prepare(
         $db,
         "SELECT COUNT(*)
          FROM notices
-         WHERE title LIKE '%$keyword%'"
+         WHERE title LIKE ?"
     );
+    mysqli_stmt_bind_param($stmt, 's', $searchKeyword);
+    mysqli_stmt_execute($stmt);
+    $countResult = mysqli_stmt_get_result($stmt);
 
 } else {
 
-    $countResult = mysqli_query(
+    $stmt = mysqli_prepare(
         $db,
         "SELECT COUNT(*)
          FROM qna
-         WHERE title LIKE '%$keyword%'"
+         WHERE title LIKE ?"
     );
+    mysqli_stmt_bind_param($stmt, 's', $searchKeyword);
+    mysqli_stmt_execute($stmt);
+    $countResult = mysqli_stmt_get_result($stmt);
 }
 
 $totalRows =
@@ -207,146 +216,128 @@ $totalPages = max(
   <?php include __DIR__ . '/../includes/header.php'; ?>
 
   <main class="news-page">
-    <section class="board-title-bar">
-      <h1><?= $boardType === 'qna' ? 'Q&A' : '공지사항' ?></h1>
-      <button type="button" aria-label="open board menu">⌄</button>
-    </section>
 
     <section class="board-wrap">
+
+    <div class="community-head">
+        <div>
+            <p>MBCA COMMUNITY</p>
+            <h1>공지사항 & Q&A</h1>
+        </div>
+
+        <form method="get" class="community-search">
+            <input
+                type="hidden"
+                name="type"
+                value="<?= $boardType ?>"
+            >
+
+            <input
+                type="text"
+                name="keyword"
+                value="<?= e($keyword) ?>"
+                placeholder="검색어를 입력하세요."
+            >
+
+            <button type="submit">⌕</button>
+        </form>
+    </div>
+
     <nav class="board-tabs" aria-label="board category">
-        <a class="<?= $boardType === 'notice' ? 'is-active' : '' ?>" href="/coffee/pages/news.php?type=notice">공지사항</a>
-        <a class="<?= $boardType === 'qna' ? 'is-active' : '' ?>" href="/coffee/pages/news.php?type=qna">Q&A</a>
+        <a class="<?= $boardType === 'notice' ? 'is-active' : '' ?>"
+           href="/coffee/pages/news.php?type=notice">
+            공지사항
+        </a>
+
+        <a class="<?= $boardType === 'qna' ? 'is-active' : '' ?>"
+           href="/coffee/pages/news.php?type=qna">
+            Q&A
+        </a>
     </nav>
 
-      <div class="board-tools">
+    <div class="board-count">
+        전체 <strong><?= $totalRows ?></strong>건
+        <span>|</span>
+        현재 페이지 <strong><?= $page ?>/<?= $totalPages ?></strong>
+    </div>
 
+    <div class="board-actions">
+        <?php if(
+            $boardType === 'notice' &&
+            isset($_SESSION['role']) &&
+            $_SESSION['role'] === 'admin'
+        ): ?>
+            <a href="/coffee/pages/notice_write.php" class="write-btn">
+                공지 작성
+            </a>
+        <?php endif; ?>
 
-<form method="get">
+        <?php if($boardType === 'qna'): ?>
+            <a class="write-btn" href="/coffee/pages/qna_write.php">
+                문의 등록
+            </a>
+        <?php endif; ?>
+    </div>
 
-    <input
-        type="hidden"
-        name="type"
-        value="<?= $boardType ?>"
-    >
+    <div class="board-list">
+        <?php foreach ($rows as $row): ?>
 
-    <input
-        type="text"
-        name="keyword"
-        value="<?= e($keyword) ?>"
-        placeholder="검색어 입력"
-    >
+            <a
+                class="board-item"
+                href="/coffee/pages/news_view.php?id=<?= $row['id'] ?>&type=<?= $row['type'] ?>"
+            >
+                <div class="board-left">
+                    <?php if($row['type'] === 'notice'): ?>
+                        <span class="board-badge">공지</span>
+                    <?php else: ?>
+                        <span class="board-badge qna">Q&A</span>
+                    <?php endif; ?>
 
-    <button type="submit">
-        검색
-    </button>
+                    <h3>
+                        <?php if(
+                            isset($row['is_pinned']) &&
+                            $row['is_pinned']
+                        ): ?>
+                            📌
+                        <?php endif; ?>
 
-</form>
-        <?php
-if(
-    $boardType === 'notice' &&
-    isset($_SESSION['role']) &&
-    $_SESSION['role'] === 'admin'
-):
-?>
+                        <?= e($row['title']) ?>
+                    </h3>
+                </div>
 
-<a
-    href="/coffee/pages/notice_write.php"
-    class="write-btn"
->
-    공지 작성
-</a>
+                <div class="board-meta">
+                    <span>
+                        <?= $row['type'] === 'qna'
+                            ? e($row['masked_userid'])
+                            : '관리자'
+                        ?>
+                    </span>
+                    <span><?= e($row['date']) ?></span>
+                    <span>조회 <?= e($row['views']) ?></span>
 
-<?php endif; ?>
-        <p>
-전체 <strong><?= $totalRows ?></strong>건
-현재 페이지
-<strong>
-<?= $page ?>/<?= $totalPages ?>
-</strong>
-</p>
-      <?php if($boardType === 'qna'): ?>
+                    <?php if ($boardType === 'qna'): ?>
+                        <span><?= e($row['status']) ?></span>
+                    <?php endif; ?>
 
-<a
-    class="write-btn"
-    href="/coffee/pages/qna_write.php"
->
-    문의 등록
-</a>
+                    <strong>›</strong>
+                </div>
+            </a>
 
-<?php endif; ?>
-      <div class="board-table-wrap">
-        <table class="board-table">
-<thead>
-<tr>
+        <?php endforeach; ?>
+    </div>
 
-    <th>번호</th>
-    <th>제목</th>
-    <th>작성자</th>
-    <th>날짜</th>
-    <th>조회수</th>
+    <div class="pagination">
+        <?php for($i = 1; $i <= $totalPages; $i++): ?>
+            <a
+                class="<?= $page === $i ? 'active-page' : '' ?>"
+                href="?type=<?= $boardType ?>&keyword=<?= urlencode($keyword) ?>&page=<?= $i ?>"
+            >
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
 
-    <?php if ($boardType === 'qna'): ?>
-        <th>상태</th>
-    <?php endif; ?>
-
-</tr>
-</thead>
-          <tbody>
-            <?php foreach ($rows as $row): ?>
-              <tr>
-                <td><?= e($row['id']) ?></td>
-                <td class="board-subject">
-
-<a href="/coffee/pages/news_view.php?id=<?= $row['id'] ?>&type=<?= $row['type'] ?>">
-
-<?php if(
-    isset($row['is_pinned'])
-    &&
-    $row['is_pinned']
-): ?>
-📌
-<?php endif; ?>
-
-<?= e($row['title']) ?>
-
-</a>
-                </a>
-                </td>
-                <?php if ($boardType === 'qna'): ?>
-    <td><?= e($row['masked_userid']) ?></td>
-<?php else: ?>
-    <td>관리자</td>
-<?php endif; ?>
-                <td><?= e($row['date']) ?></td>
-                <td><?= e($row['views']) ?></td>
-                <?php if ($boardType === 'qna'): ?>
-                  <td><?= e($row['status']) ?></td>
-                <?php endif; ?>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-        <div class="pagination">
-
-<?php for(
-    $i = 1;
-    $i <= $totalPages;
-    $i++
-): ?>
-
-<a
-href="?type=<?= $boardType ?>&keyword=<?= urlencode($keyword) ?>&page=<?= $i ?>"
->
-
-<?= $i ?>
-
-</a>
-
-<?php endfor; ?>
-
-</div>
-      </div>
-    </section>
+</section>
   </main>
 
   <script src="/coffee/assets/js/nav.js"></script>

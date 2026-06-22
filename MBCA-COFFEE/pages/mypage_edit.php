@@ -9,46 +9,16 @@ MBCA COFFEE MY PAGE EDIT
 =========================================
 */
 
-session_start();
-
+require_once __DIR__ . '/../includes/auth.php';
+require_login();
 include __DIR__ . '/../config/database.php';
-
-if (!isset($_SESSION['userid'])) {
-
-    header('Location: /coffee/pages/login.php');
-    exit;
-}
 
 $userid = $_SESSION['userid'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $phone = trim($_POST['phone']);
-
-    mysqli_query(
-        $db,
-        "UPDATE users
-         SET
-            name='$name',
-            email='$email',
-            phone='$phone'
-         WHERE userid='$userid'"
-    );
-
-    header(
-        'Location: /coffee/pages/mypage.php'
-    );
-    exit;
-}
-
-$result = mysqli_query(
-    $db,
-    "SELECT *
-     FROM users
-     WHERE userid='$userid'"
-);
+$stmt = mysqli_prepare($db, 'SELECT * FROM users WHERE userid = ?');
+mysqli_stmt_bind_param($stmt, 's', $userid);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 $user = mysqli_fetch_assoc($result);
 
@@ -56,14 +26,13 @@ $user = mysqli_fetch_assoc($result);
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<link rel="stylesheet" href="/coffee/assets/css/admin.css">
 <meta charset="UTF-8">
 
 <title>정보 수정</title>
 
 <link rel="stylesheet" href="/coffee/assets/css/header.css">
 <link rel="stylesheet" href="/coffee/assets/css/nav.css">
-<link rel="stylesheet" href="/coffee/assets/css/forms.css">
+<link rel="stylesheet" href="/coffee/assets/css/notice.css">
 
 </head>
 
@@ -71,47 +40,68 @@ $user = mysqli_fetch_assoc($result);
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
-<main class="auth-page">
+<main class="write-page">
 
-<section class="auth-card">
+    <section class="write-wrap">
 
-<h1>회원 정보 수정</h1>
+        <h1>회원 정보 수정</h1>
 
-<form method="post">
+        <form method="post" action="/coffee/actions/mypage_update.php">
+<?= csrf_field() ?>
 
-    <label>이름</label>
+            <div class="form-row">
+                <label>이름</label>
 
-    <input
-        type="text"
-        name="name"
-        value="<?= htmlspecialchars($user['name']) ?>"
-        required
-    >
+                <input
+                    type="text"
+                    name="name"
+                    value="<?= e($user['name']) ?>"
+                    required
+                >
+            </div>
 
-    <label>이메일</label>
+            <div class="form-row">
+                <label>이메일</label>
 
-    <input
-        type="email"
-        name="email"
-        value="<?= htmlspecialchars($user['email']) ?>"
-        required
-    >
+                <input
+                    type="email"
+                    name="email"
+                    value="<?= e($user['email']) ?>"
+                    required
+                >
+            </div>
 
-    <label>전화번호</label>
+            <div class="form-row">
+                <label>전화번호</label>
 
-    <input
-        type="text"
-        name="phone"
-        value="<?= htmlspecialchars($user['phone']) ?>"
-    >
+                <input
+                    type="text"
+                    name="phone"
+                    value="<?= e($user['phone']) ?>"
+                >
+            </div>
 
-    <button type="submit">
-        수정 완료
-    </button>
+            <div class="form-buttons">
 
-</form>
+                <a
+                    href="/coffee/pages/mypage.php"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
 
-</section>
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    수정 완료 →
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
 
 </main>
 <?php include __DIR__ . '/../includes/footer.php'; ?>

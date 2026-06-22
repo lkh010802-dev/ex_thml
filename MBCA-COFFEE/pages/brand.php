@@ -28,33 +28,41 @@ $brandValues = [
   <?php include __DIR__ . '/../includes/header.php'; ?>
 
   <main class="brand-page">
+
     <section class="brand-hero">
-      <p>MBCA BRAND</p>
-      <h1>학생들의 일상에<br>작은 활력을 더합니다</h1>
+
+        <p>MBCA BRAND</p>
+
+        <h1>
+            학생들의 일상에<br>
+            작은 활력을 더합니다
+        </h1>
+
+        <section class="brand-intro">
+            <div>
+                <p>
+                    MBCA COFFEE는 빠르게 지나가는 하루 속에서도
+                    누구나 부담 없이 즐길 수 있는 커피를 만듭니다.
+                </p>
+                <p>
+                    노랑과 검정의 선명한 에너지처럼, MBCA는 학생들의 일상에
+                    밝고 가벼운 여유를 더하는 브랜드를 목표로 합니다.
+                </p>
+            </div>
+        </section>
+
+        <section class="brand-values">
+            <?php foreach ($brandValues as $value): ?>
+                <article>
+                    <h2><?= $value['title'] ?></h2>
+                    <p><?= $value['desc'] ?></p>
+                </article>
+            <?php endforeach; ?>
+        </section>
+
     </section>
 
-    <section class="brand-intro">
-      <div>
-        <p>
-          MBCA COFFEE는 빠르게 지나가는 하루 속에서도
-          누구나 부담 없이 즐길 수 있는 커피를 만듭니다.
-        </p>
-        <p>
-          노랑과 검정의 선명한 에너지처럼, MBCA는 학생들의 일상에
-          밝고 가벼운 여유를 더하는 브랜드를 목표로 합니다.
-        </p>
-      </div>
-    </section>
-
-    <section class="brand-values">
-      <?php foreach ($brandValues as $value): ?>
-        <article>
-          <h2><?= $value['title'] ?></h2>
-          <p><?= $value['desc'] ?></p>
-        </article>
-      <?php endforeach; ?>
-    </section>
-  </main>
+</main>
 
   <script src="/coffee/assets/js/nav.js"></script>
   <?php include __DIR__ . '/../includes/footer.php'; ?>

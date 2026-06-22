@@ -1,89 +1,19 @@
 <?php
 
-session_start();
-
-if (
-    !isset($_SESSION['role'])
-    || $_SESSION['role'] !== 'admin'
-) {
-    die('관리자만 접근 가능합니다.');
-}
+require_once __DIR__ . '/../includes/auth.php';
+require_admin();
+$uploadError = pull_flash('upload_error', '');
 
 require_once __DIR__ . '/../config/database.php';
 
 $id = (int)$_GET['id'];
-$result = mysqli_query(
-    $db,
-    "SELECT * FROM menus WHERE id=$id"
-);
-
-$menu = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($db, 'SELECT * FROM menus WHERE id = ?');
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$menu = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if (!$menu) {
     die('존재하지 않는 메뉴입니다.');
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $name = trim($_POST['name']);
-    $category = trim($_POST['category']);
-    $price = (int)$_POST['price'];
-    $description = trim($_POST['description']);
-    $nutrition = trim($_POST['nutrition']);
-    $is_best =
-    isset($_POST['is_best'])
-    ? 1
-    : 0;
-    
-
-$is_season =
-    isset($_POST['is_season'])
-    ? 1
-    : 0;
-    $temperature_type =
-    $_POST['temperature_type'];
-
-    $imagePath = $menu['image'];
-        if (
-        isset($_FILES['image'])
-        && $_FILES['image']['error'] === 0
-    ) {
-
-        $fileName =
-            time() . '_' .
-            basename($_FILES['image']['name']);
-
-        $uploadDir =
-            $_SERVER['DOCUMENT_ROOT']
-            . '/coffee/assets/images/menu/';
-
-        move_uploaded_file(
-            $_FILES['image']['tmp_name'],
-            $uploadDir . $fileName
-        );
-
-        $imagePath =
-            '/coffee/assets/images/menu/' . $fileName;
-    }
-        mysqli_query(
-        $db,
-        "
-        UPDATE menus
-        SET
-            name='$name',
-            category='$category',
-            temperature_type='$temperature_type',
-            price='$price',
-            description='$description',
-            nutrition='$nutrition',
-            image='$imagePath',
-            is_best='$is_best',
-            is_season='$is_season'
-        WHERE id=$id
-        "
-    );
-
-    header('Location: admin_menus.php');
-    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -96,160 +26,207 @@ $is_season =
 </head>
 <body>
 
-<p>
-<a href="/coffee/pages/admin_menus.php">
-← 메뉴 관리
-</a>
-</p>
+<?php include __DIR__ . '/../includes/admin_nav.php'; ?>
 
-<h1>메뉴 수정</h1>
+<main class="write-page">
 
-<form method="post" enctype="multipart/form-data">
-    <p>
-메뉴명<br>
-<input
-    type="text"
-    name="name"
-    value="<?= htmlspecialchars($menu['name']) ?>"
-    required
->
-</p>
-<p>
-카테고리<br>
+    <section class="write-wrap">
 
-<select name="category">
+        <p>
+            <a href="/coffee/pages/admin_menus.php" class="back-link">
+                ← 메뉴 관리로 돌아가기
+            </a>
+        </p>
 
-<option
-value="drink"
-<?= $menu['category']=='drink' ? 'selected' : '' ?>>
-음료
-</option>
+        <h1>메뉴 수정</h1>
 
-<option
-value="food"
-<?= $menu['category']=='food' ? 'selected' : '' ?>>
-푸드
-</option>
+        <?php if ($uploadError): ?>
+            <p class="form-message error">
+                <?= e($uploadError) ?>
+            </p>
+        <?php endif; ?>
 
-<option
-value="goods"
-<?= $menu['category']=='goods' ? 'selected' : '' ?>>
-상품
-</option>
+        <form
+            method="post"
+            action="/coffee/actions/menu_update.php"
+            enctype="multipart/form-data"
+        >
+            <?= csrf_field() ?>
 
-</select>
+            <input
+                type="hidden"
+                name="id"
+                value="<?= $id ?>"
+            >
 
-</p>
+            <div class="form-row">
+                <label>메뉴명</label>
 
-<p>
-온도 타입<br>
+                <input
+                    type="text"
+                    name="name"
+                    value="<?= e($menu['name']) ?>"
+                    required
+                >
+            </div>
 
-<select name="temperature_type">
+            <div class="form-row">
+                <label>카테고리</label>
 
-<option
-value="ice"
-<?= $menu['temperature_type']=='ice' ? 'selected' : '' ?>>
-ICE
-</option>
+                <select name="category">
+                    <option
+                        value="coffee"
+                        <?= $menu['category'] == 'coffee' ? 'selected' : '' ?>
+                    >
+                        커피
+                    </option>
 
-<option
-value="hot"
-<?= $menu['temperature_type']=='hot' ? 'selected' : '' ?>>
-HOT
-</option>
+                    <option
+                        value="drink"
+                        <?= $menu['category'] == 'drink' ? 'selected' : '' ?>
+                    >
+                        음료
+                    </option>
 
-</select>
+                    <option
+                        value="food"
+                        <?= $menu['category'] == 'food' ? 'selected' : '' ?>
+                    >
+                        푸드
+                    </option>
 
-</p>
-<p>
-가격<br>
-<input
-type="number"
-name="price"
-value="<?= $menu['price'] ?>"
-required
->
-</p>
-<p>
-설명<br>
+                    <option
+                        value="goods"
+                        <?= $menu['category'] == 'goods' ? 'selected' : '' ?>
+                    >
+                        상품
+                    </option>
+                </select>
+            </div>
 
-<textarea name="description"><?= htmlspecialchars($menu['description']) ?></textarea>
+            <div class="form-row" id="temp-wrap">
+                <label>온도 타입</label>
 
-</p>
-<p>
-영양정보<br>
-<p>
+                <select name="temperature_type">
+                    <option
+                        value=""
+                        <?= empty($menu['temperature_type']) ? 'selected' : '' ?>
+                    >
+                        선택 안함
+                    </option>
 
-<label>
-<input
-type="checkbox"
-name="is_best"
-value="1"
-<?= $menu['is_best'] ? 'checked' : '' ?>
->
+                    <option
+                        value="ice"
+                        <?= $menu['temperature_type'] == 'ice' ? 'selected' : '' ?>
+                    >
+                        ICE
+                    </option>
 
-베스트 메뉴
+                    <option
+                        value="hot"
+                        <?= $menu['temperature_type'] == 'hot' ? 'selected' : '' ?>
+                    >
+                        HOT
+                    </option>
+                </select>
+            </div>
 
-</label>
+            <div class="form-row">
+                <label>가격</label>
 
-</p>
+                <input
+                    type="number"
+                    name="price"
+                    value="<?= $menu['price'] ?>"
+                    required
+                >
+            </div>
 
-<p>
+            <div class="form-row">
+                <label>설명</label>
 
-<label>
+                <textarea
+                    name="description"
+                    rows="6"
+                ><?= e($menu['description']) ?></textarea>
+            </div>
 
-<input
-type="checkbox"
-name="is_season"
-value="1"
-<?= $menu['is_season'] ? 'checked' : '' ?>
->
+            <div class="form-row">
+                <label>영양정보</label>
 
-시즌 메뉴
+                <input
+                    type="text"
+                    name="nutrition"
+                    value="<?= e($menu['nutrition']) ?>"
+                >
+            </div>
 
-</label>
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input
+                        type="checkbox"
+                        name="is_best"
+                        value="1"
+                        <?= $menu['is_best'] ? 'checked' : '' ?>
+                    >
+                    베스트 메뉴
+                </label>
 
-</p>
+                <label class="checkbox-row">
+                    <input
+                        type="checkbox"
+                        name="is_season"
+                        value="1"
+                        <?= $menu['is_season'] ? 'checked' : '' ?>
+                    >
+                    시즌 메뉴
+                </label>
+            </div>
 
-<input
-type="text"
-name="nutrition"
-value="<?= htmlspecialchars($menu['nutrition']) ?>"
->
+            <div class="form-row">
+                <label>현재 이미지</label>
 
-</p>
-<p>
+                <img
+                    id="preview"
+                    src="<?= e(image_url($menu['image'], 'menu')) ?>"
+                    class="current-image-thumbnail"
+                    alt="현재 메뉴 이미지"
+                >
+            </div>
 
-현재 이미지
+            <div class="form-row">
+                <label>새 이미지</label>
 
-<br>
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                >
+            </div>
 
-<img
-id="preview"
-src="<?= $menu['image'] ?>"
-width="150"
->
-</p>
+            <div class="form-buttons">
+                <a
+                    href="/coffee/pages/admin_menus.php"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
 
-<p>
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    수정 완료 →
+                </button>
+            </div>
 
-새 이미지
+        </form>
 
-<br>
+    </section>
 
-<input
-type="file"
-name="image"
-accept="image/*"
->
+</main>
 
-</p>
-
-<button type="submit">
-수정하기
-</button>
-
-</form>
+<script src="/coffee/assets/js/image-preview.js"></script>
 
 </body>
 </html>

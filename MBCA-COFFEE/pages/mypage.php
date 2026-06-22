@@ -1,25 +1,19 @@
 <?php
 
-session_start();
-
+require_once __DIR__ . '/../includes/auth.php';
+require_login();
 include __DIR__ . '/../config/database.php';
-
-if (!isset($_SESSION['userid'])) {
-
-    header('Location: /coffee/pages/login.php');
-    exit;
-}
 
 $userid = $_SESSION['userid'];
 
-$sql = "SELECT * FROM users
-        WHERE userid='$userid'";
-
-$result = mysqli_query($db, $sql);
+$stmt = mysqli_prepare($db, 'SELECT * FROM users WHERE userid = ?');
+mysqli_stmt_bind_param($stmt, 's', $userid);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 $user = mysqli_fetch_assoc($result);
 
-$qnaResult = mysqli_query(
+$stmt = mysqli_prepare(
     $db,
     "SELECT
         id,
@@ -27,10 +21,39 @@ $qnaResult = mysqli_query(
         status,
         created_at
      FROM qna
-     WHERE userid = '$userid'
+     WHERE userid = ?
      ORDER BY id DESC
      LIMIT 3"
 );
+$countStmt = mysqli_prepare(
+    $db,
+    "
+    SELECT COUNT(*) AS total
+    FROM qna
+    WHERE userid = ?
+    "
+);
+
+mysqli_stmt_bind_param(
+    $countStmt,
+    's',
+    $userid
+);
+
+mysqli_stmt_execute($countStmt);
+
+$countResult =
+    mysqli_stmt_get_result(
+        $countStmt
+    );
+
+$qnaCount =
+    mysqli_fetch_assoc(
+        $countResult
+    )['total'];
+mysqli_stmt_bind_param($stmt, 's', $userid);
+mysqli_stmt_execute($stmt);
+$qnaResult = mysqli_stmt_get_result($stmt);
 
 ?>
 <!DOCTYPE html>
@@ -52,87 +75,120 @@ $qnaResult = mysqli_query(
 
 <main class="mypage">
 
-    <section class="mypage-hero">
-        <p>MY PAGE</p>
-        <h1>마이페이지</h1>
-    </section>
+<section class="mypage-grid">
+  <article class="mypage-box profile-box">
 
-    <section class="profile-card">
-        <h2><?= $user['name'] ?></h2>
+    <h2>내 정보</h2>
+
+    <div class="profile-image-wrap">
+
+        <img
+            src="<?= $user['profile_image']
+                ? $user['profile_image']
+                : '/coffee/assets/images/default-profile.png' ?>"
+            class="profile-image"
+        >
+
+        <a
+            href="/coffee/pages/profile_upload.php"
+            class="profile-camera"
+        >
+            변경
+        </a>
+
+    </div>
+
+    <h3 class="profile-name">
+        <?= e($user['name']) ?>
+    </h3>
+
+    <div class="member-badge">
+        <?= $user['role'] === 'admin'
+            ? 'MBCA ADMIN'
+            : 'MBCA MEMBER' ?>
+    </div>
+
+    <div class="profile-info">
+
+        <strong>이메일</strong>
 
         <span>
-        <?= $user['role'] === 'admin' ? '관리자' : '일반회원' ?>
+            <?= e($user['email']) ?>
         </span>
 
+    </div>
 
-            <?php if($user['role'] === 'admin'): ?>
+    <div class="mypage-actions">
 
-                <span class="admin-badge">
-                    관리자
-                </span>
+        <a href="/coffee/pages/mypage_edit.php">
+            정보 수정
+        </a>
 
-                <a href="/coffee/pages/admin.php">
-                    관리자 대시보드
-                </a>
+        <a href="/coffee/pages/mypage_password.php">
+            비밀번호 변경
+        </a>
 
-            <?php endif; ?>
-        <ul>
-            <li>이메일 : <?= $user['email'] ?></li>
-            <li>가입일 :<?= date('Y-m-d', strtotime($user['created_at'])) ?></li>
-            <li>보유 쿠폰 : <?= $user['coupon_count'] ?>개</li>
-        </ul>
-    </section>
+        <?php if($user['role'] === 'admin'): ?>
 
-    <section class="mypage-grid">
+            <a
+                href="/coffee/pages/admin.php"
+                class="admin-link"
+            >
+                관리자 대시보드
+            </a>
 
-        <article class="mypage-box">
-            <h2>내 정보</h2>
+        <?php endif; ?>
 
-            <div class="info-row">
-                <strong>이름</strong>
-                <span><?= $user['name'] ?></span>
-            </div>
+    </div>
 
-            <div class="info-row">
-                <strong>이메일</strong>
-                <span><?= $user['email'] ?></span>
-            </div>
-                    <a href="/coffee/pages/mypage_password.php">
-                         비밀번호 변경
-                  </a>
+</article>
+<article class="mypage-box qna-box">
 
+    <div class="qna-head">
 
-            <a href="/coffee/pages/mypage_edit.php">
-    정보 수정
-</a>
-        </article>
-<article class="mypage-box">
+        <h2>내 문의내역</h2>
 
-    <h2>내 문의내역</h2>
+        <a href="/coffee/pages/news.php?type=qna">
+            전체보기 →
+        </a>
+
+    </div>
+
+    <div class="qna-summary">
+
+        <strong>
+            <?= $qnaCount ?>
+        </strong>
+
+        <span>
+            총 문의수
+        </span>
+
+    </div>
 
     <?php if(mysqli_num_rows($qnaResult) > 0): ?>
 
         <?php while($qna = mysqli_fetch_assoc($qnaResult)): ?>
 
-        <div class="qna-item">
+            <div class="qna-item">
 
-            <strong>
-                <a href="/coffee/pages/news_view.php?id=<?= $qna['id'] ?>&type=qna">
-                    <?= htmlspecialchars($qna['title']) ?>
-                </a>
-            </strong>
+                <strong>
+                    <a href="/coffee/pages/news_view.php?id=<?= $qna['id'] ?>&type=qna">
+                        <?= e($qna['title']) ?>
+                    </a>
+                </strong>
 
-            <span>
-                <?= $qna['status'] === 'answered'
-                    ? '답변완료'
-                    : '답변대기' ?>
-            </span>
+                <span>
+                    <?= $qna['status'] === 'answered'
+                        ? '답변완료'
+                        : '답변대기' ?>
+                </span>
 
-            <small>
-                <?= date('Y-m-d', strtotime($qna['created_at'])) ?>
-            </small>
+                <small>
+                    <?= date('Y-m-d', strtotime($qna['created_at'])) ?>
+                </small>
 
-        </div>
+            </div>
 
         <?php endwhile; ?>
 
@@ -143,19 +199,7 @@ $qnaResult = mysqli_query(
     <?php endif; ?>
 
 </article>
-        </article>
-
-        <article class="mypage-box">
-            <h2>쿠폰함</h2>
-
-            <?php foreach($coupons as $coupon): ?>
-            <div class="coupon-card">
-                <?= $coupon ?>
-            </div>
-            <?php endforeach; ?>
-        </article>
-
-    </section>
+</section>
 
 </main>
 

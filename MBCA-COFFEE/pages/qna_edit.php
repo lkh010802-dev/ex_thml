@@ -1,50 +1,24 @@
 <?php
 
-session_start();
-
+require_once __DIR__ . '/../includes/auth.php';
+require_login();
 include __DIR__ . '/../config/database.php';
 
 $id = (int)($_GET['id'] ?? 0);
 
-$result = mysqli_query(
-    $db,
-    "SELECT *
-     FROM qna
-     WHERE id=$id"
-);
-
-$qna = mysqli_fetch_assoc($result);
+$stmt = mysqli_prepare($db, 'SELECT * FROM qna WHERE id = ?');
+mysqli_stmt_bind_param($stmt, 'i', $id);
+mysqli_stmt_execute($stmt);
+$qna = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if(!$qna){
     die('문의가 존재하지 않습니다.');
 }
 
 if(
-    !isset($_SESSION['userid'])
-    ||
     $_SESSION['userid'] !== $qna['userid']
 ){
     die('수정 권한이 없습니다.');
-}
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-    $title = trim($_POST['title']);
-    $content = trim($_POST['content']);
-
-    mysqli_query(
-        $db,
-        "UPDATE qna
-         SET
-            title='$title',
-            content='$content'
-         WHERE id=$id"
-    );
-
-    header(
-        "Location: news_view.php?id=$id&type=qna"
-    );
-
-    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -53,36 +27,61 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 <link rel="stylesheet" href="/coffee/assets/css/admin.css">
 <meta charset="UTF-8">
 <title>문의 수정</title>
+<link rel="stylesheet" href="/coffee/assets/css/header.css">
+<link rel="stylesheet" href="/coffee/assets/css/nav.css">
+<link rel="stylesheet" href="/coffee/assets/css/notice.css">
 </head>
 <body>
+    <?php include __DIR__ . '/../includes/header.php'; ?>
 
-<h1>문의 수정</h1>
+<main class="write-page">
 
-<form method="post">
+    <section class="write-wrap">
 
-<input
-    type="text"
-    name="title"
-    value="<?= htmlspecialchars($qna['title']) ?>"
-    required
->
+        <h1>문의 수정</h1>
 
-<br><br>
+        <form method="post">
 
-<textarea
-    name="content"
-    rows="10"
-    cols="80"
-    required
-><?= htmlspecialchars($qna['content']) ?></textarea>
+            <div class="form-row">
+                <label>문의 제목</label>
+                <input
+                    type="text"
+                    name="title"
+                    value="<?= e($qna['title']) ?>"
+                    required
+                >
+            </div>
 
-<br><br>
+            <div class="form-row">
+                <label>문의 내용</label>
+                <textarea
+                    name="content"
+                    rows="10"
+                    required
+                ><?= e($qna['content']) ?></textarea>
+            </div>
 
-<button type="submit">
-수정 완료
-</button>
+            <div class="form-buttons">
+                <a
+                    href="/coffee/pages/news_view.php?id=<?= $qna['id'] ?>&type=qna"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
 
-</form>
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    수정 완료 →
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
 
 </body>
 </html>

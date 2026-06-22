@@ -1,52 +1,9 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../includes/auth.php';
+require_admin();
 
-if (
-    !isset($_SESSION['role'])
-    || $_SESSION['role'] !== 'admin'
-) {
-    die('관리자만 접근 가능합니다.');
-}
 
-require_once __DIR__ . '/../config/database.php';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $name = trim($_POST['name']);
-    $address = trim($_POST['address']);
-    $phone = trim($_POST['phone']);
-    $hours = trim($_POST['hours']);
-    $lat = $_POST['lat'];
-    $lng = $_POST['lng'];
-
-    mysqli_query(
-        $db,
-        "
-        INSERT INTO stores
-        (
-            name,
-            address,
-            phone,
-            hours,
-            lat,
-            lng
-        )
-        VALUES
-        (
-            '$name',
-            '$address',
-            '$phone',
-            '$hours',
-            '$lat',
-            '$lng'
-        )
-        "
-    );
-
-    header('Location: admin_stores.php');
-    exit;
-}
 
 ?>
 
@@ -61,77 +18,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     rel="stylesheet"
     href="/coffee/assets/css/admin.css"
 >
-
+<link rel="stylesheet" href="/coffee/assets/css/header.css">
+<link rel="stylesheet" href="/coffee/assets/css/nav.css">
+<link rel="stylesheet" href="/coffee/assets/css/notice.css">
 </head>
 <body>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
-<?php include __DIR__ . '/../includes/admin_nav.php'; ?>
+<main class="write-page">
 
-<h1>매장 등록</h1>
+    <section class="write-wrap">
 
-<p>
-<a href="/coffee/pages/admin_stores.php">
-← 매장 관리
-</a>
-</p>
+        <h1>매장 등록</h1>
 
-<form method="post">
+        <form
+            method="post"
+            action="/coffee/actions/store_create.php"
+        >
+            <?= csrf_field() ?>
 
-<p>
-매장명<br>
-<input
-    type="text"
-    name="name"
-    required
->
-</p>
+            <div class="form-row">
+                <label>매장명</label>
+                <input type="text" name="name" required>
+            </div>
 
-<p>
-주소<br>
-<input
-    type="text"
-    name="address"
-    required
->
-</p>
+            <div class="form-row">
+                <label>주소</label>
+                <input type="text" name="address" required>
+            </div>
 
-<p>
-전화번호<br>
-<input
-    type="text"
-    name="phone"
->
-</p>
+            <div class="form-row">
+                <label>전화번호</label>
+                <input type="text" name="phone">
+            </div>
 
-<p>
-영업시간<br>
-<input
-    type="text"
-    name="hours"
-    placeholder="08:00 - 22:00"
->
-</p>
-<p>
-위도<br>
-<input
-    type="text"
-    name="lat"
->
-</p>
+            <div class="form-row">
+                <label>영업시간</label>
+                <input
+                    type="text"
+                    name="hours"
+                    value="08:00 - 22:00"
+                >
+            </div>
 
-<p>
-경도<br>
-<input
-    type="text"
-    name="lng"
->
-</p>
+            <div class="form-row">
+                <label>위도</label>
+                <input type="text" name="lat" required>
+            </div>
 
-<button type="submit">
-등록하기
-</button>
+            <div class="form-row">
+                <label>경도</label>
+                <input type="text" name="lng" required>
+            </div>
 
-</form>
+            <div class="form-buttons">
 
+                <a
+                    href="/coffee/pages/admin_stores.php"
+                    class="cancel-btn"
+                >
+                    취소
+                </a>
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    매장 등록 →
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
 </html>

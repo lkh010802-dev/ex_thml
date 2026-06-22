@@ -1,74 +1,128 @@
 .brand-page {
     min-height: 100vh;
-    padding: 110px 24px 60px;
-    background: #ffd400;
-    color: #111;
-}
-
-.brand-hero,
-.brand-intro,
-.brand-values {
-    width: min(100%, 1120px);
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0;
+    background: #111;
+    color: #fff;
 }
 
 .brand-hero {
-    margin-bottom: 48px;
+    min-height: 100vh;
+    padding: 140px 7vw 70px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background:
+        linear-gradient(90deg,
+            rgba(0, 0, 0, .9) 0%,
+            rgba(0, 0, 0, .78) 42%,
+            rgba(0, 0, 0, .34) 68%,
+            rgba(0, 0, 0, .08) 100%),
+        url("/coffee/assets/images/MBCA-bg.png") center / cover no-repeat;
 }
 
-.brand-hero p {
-    margin: 0 0 12px;
+.brand-hero>p {
+    margin: 0 0 18px;
+
+    color: #ffd400;
+
+    font-size: 18px;
     font-weight: 900;
-    letter-spacing: 0.16em;
+    letter-spacing: .22em;
 }
 
 .brand-hero h1 {
-    margin: 0;
-    font-size: clamp(48px, 8vw, 104px);
-    line-height: 1.05;
+    max-width: 760px;
+    margin: 0 0 30px;
+
+    font-size: clamp(44px, 5.8vw, 86px);
+    line-height: 1.08;
+    font-weight: 900;
 }
 
 .brand-intro {
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-bottom: 36px;
+    position: static;
+
+    width: min(700px, 100%);
+    margin: 0 0 36px;
 }
 
 .brand-intro p {
-    max-width: 760px;
-    margin: 0 0 18px;
-    font-size: clamp(20px, 2.4vw, 30px);
-    font-weight: 800;
-    line-height: 1.55;
+    margin: 0 0 14px;
+
+    color: rgba(255, 255, 255, .9);
+
+    font-size: clamp(17px, 1.4vw, 22px);
+    font-weight: 700;
+    line-height: 1.65;
 }
 
 .brand-values {
+    position: static;
+
+    width: min(100%, 1120px);
+
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 0;
+
+    background: rgba(0, 0, 0, .58);
+
+    border: 1px solid rgba(255, 255, 255, .16);
+    backdrop-filter: blur(10px);
 }
 
 .brand-values article {
-    min-height: 220px;
-    padding: 24px;
-    border: 3px solid #111;
-    background: #fff;
+    min-height: 150px;
+    padding: 28px;
+
+    border-right: 1px solid rgba(255, 255, 255, .18);
+}
+
+.brand-values article:last-child {
+    border-right: 0;
 }
 
 .brand-values h2 {
-    margin: 0 0 14px;
-    font-size: 28px;
+    margin: 0 0 12px;
+
+    color: #fff;
+
+    font-size: 24px;
+    font-weight: 900;
 }
 
 .brand-values p {
     margin: 0;
-    font-weight: 800;
-    line-height: 1.6;
+
+    color: rgba(255, 255, 255, .78);
+
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.65;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
+    .brand-hero {
+        min-height: auto;
+        padding: 120px 24px 60px;
+    }
+
+    .brand-hero h1 {
+        font-size: clamp(42px, 12vw, 64px);
+    }
+
     .brand-values {
         grid-template-columns: 1fr;
+    }
+
+    .brand-values article {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .18);
+    }
+
+    .brand-values article:last-child {
+        border-bottom: 0;
     }
 }
